@@ -10,16 +10,12 @@ interface NavItem {
 
 interface Props {
   items: NavItem[];
-  altHref: string;
-  altLabel: string;
   openLabel: string;
   closeLabel: string;
 }
 
 export default function MobileMenu({
   items,
-  altHref,
-  altLabel,
   openLabel,
   closeLabel,
 }: Props) {
@@ -81,7 +77,7 @@ export default function MobileMenu({
             transition={{ duration: dur, ease: EASE_OUT_SOFT }}
             className="fixed inset-0 z-30 bg-bg md:hidden"
           >
-            <nav className="container-page pt-24 pb-12 h-full flex flex-col justify-between">
+            <nav className="container-page pt-24 pb-12 h-full">
               <ul className="space-y-6">
                 {items.map((item) => (
                   <li key={item.href}>
@@ -95,12 +91,6 @@ export default function MobileMenu({
                   </li>
                 ))}
               </ul>
-              <a
-                href={altHref}
-                className="text-ink-muted hover:text-ink transition-colors text-sm self-start"
-              >
-                {altLabel}
-              </a>
             </nav>
           </motion.div>
         )}

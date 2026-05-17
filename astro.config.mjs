@@ -15,11 +15,6 @@ export default defineConfig({
     sitemap(),
     icon(),
   ],
-  i18n: {
-    defaultLocale: 'fr',
-    locales: ['fr', 'en'],
-    routing: {
-      prefixDefaultLocale: false,
-    },
-  },
+  // Routing i18n natif Astro activé en Sprint 3 (quand les pages EN existeront).
+  // Pour Sprint 1, FR-only — les helpers src/lib/i18n.ts sont prêts mais inertes.
 });

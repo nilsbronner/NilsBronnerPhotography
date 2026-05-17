@@ -1,6 +1,6 @@
 ---
 import MobileMenu from '@/components/motion/MobileMenu';
-import { t, localizedPath, altLocale, type Locale } from '@/lib/i18n';
+import { t, localizedPath, type Locale } from '@/lib/i18n';
 
 interface Props {
   locale: Locale;
@@ -16,7 +16,8 @@ const navItems = [
 ];
 
 const homeHref = localizedPath(locale, '/');
-const altHref = localizedPath(altLocale(locale), Astro.url.pathname.replace(/^\/en/, '') || '/');
+// Switch FR/EN activé en Sprint 3 (quand les pages EN existeront).
+const showLangSwitch = false;
 ---
 
 <header
@@ -39,20 +40,21 @@ const altHref = localizedPath(altLocale(locale), Astro.url.pathname.replace(/^\/
           </a>
         ))
       }
-      <a
-        href={altHref}
-        class="text-ink-muted hover:text-ink transition-colors duration-200 tabular-nums"
-        aria-label={`Switch language to ${altLocale(locale).toUpperCase()}`}
-      >
-        {t(locale, 'lang.switch')}
-      </a>
+      {
+        showLangSwitch && (
+          <a
+            href="/"
+            class="text-ink-muted hover:text-ink transition-colors duration-200 tabular-nums"
+          >
+            {t(locale, 'lang.switch')}
+          </a>
+        )
+      }
     </nav>
 
     <MobileMenu
       client:idle
       items={navItems}
-      altHref={altHref}
-      altLabel={t(locale, 'lang.switch')}
       openLabel={t(locale, 'nav.menu.open')}
       closeLabel={t(locale, 'nav.menu.close')}
     />

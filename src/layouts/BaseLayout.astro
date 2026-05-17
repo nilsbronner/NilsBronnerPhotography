@@ -3,7 +3,7 @@ import '@/styles/globals.css';
 import Navigation from '@/components/Navigation.astro';
 import Footer from '@/components/Footer.astro';
 import PageTransition from '@/components/motion/PageTransition';
-import { getLocale, altLocale, localizedPath } from '@/lib/i18n';
+import { getLocale } from '@/lib/i18n';
 
 interface Props {
   title: string;
@@ -21,8 +21,6 @@ const {
 
 const locale = getLocale(Astro.url.pathname);
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
-const altPath = localizedPath(altLocale(locale), Astro.url.pathname.replace(/^\/en/, '') || '/');
-const altUrl = new URL(altPath, Astro.site).toString();
 ---
 
 <!doctype html>
@@ -35,9 +33,7 @@ const altUrl = new URL(altPath, Astro.site).toString();
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang={locale} href={canonical} />
-    <link rel="alternate" hreflang={altLocale(locale)} href={altUrl} />
-    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site).toString()} />
+    {/* hreflang EN sera ajouté en Sprint 3 quand les pages EN existeront */}
 
     {noindex && <meta name="robots" content="noindex,nofollow" />}
 
