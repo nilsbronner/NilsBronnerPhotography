@@ -1,12 +1,65 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import ScrollReveal from '@/components/motion/ScrollReveal';
 ---
 
-<BaseLayout title="About — Nils Bronner" description="Parcours, approche et activités annexes.">
-  <section class="container-page pt-24 md:pt-36 pb-24 max-w-prose">
-    <h1 class="heading-serif text-4xl md:text-6xl mb-8">About</h1>
-    <p class="text-lg leading-relaxed text-ink-muted">
-      [À COMPLÉTER PAR NILS — manifeste long, BRIEF.md section&nbsp;3 / About.]
-    </p>
+<BaseLayout
+  title="About — Nils Bronner"
+  description="Photographe à Strasbourg. Marques, agences et institutions premium."
+>
+  <section class="container-page pt-24 md:pt-36 pb-16 max-w-prose">
+    <h1 class="heading-serif text-4xl md:text-6xl mb-12">À propos</h1>
+
+    <div class="space-y-6 text-lg leading-relaxed">
+      <p>
+        Je crois aux images qui tiennent. Celles qui ne meurent pas trois jours après la
+        campagne. Celles qui survivent au scroll et restent dans une mémoire.
+      </p>
+      <p>
+        Pour ça, il faut du temps, de la lumière et un point de vue. Je travaille avec
+        des marques, des agences et des institutions qui partagent cette exigence :
+        produire moins, mais produire ce qui restera.
+      </p>
+    </div>
   </section>
+
+  <ScrollReveal client:visible as="section" className="container-page py-16 max-w-prose">
+    <h2 class="heading-serif text-2xl mb-6">Fil rouge</h2>
+    <p class="text-ink-muted leading-relaxed">
+      Une lecture composée du réel. Je ne photographie pas un objet, un lieu ou un
+      événement : je construis l’image qui restera. Voiture, terrasse, rave ou visage —
+      le regard cadre, hiérarchise, tient la scène jusqu’à ce qu’elle devienne une icône
+      en miniature.
+    </p>
+  </ScrollReveal>
+
+  <ScrollReveal client:visible as="section" className="container-page py-16 max-w-prose">
+    <h2 class="heading-serif text-2xl mb-6">Repères</h2>
+    <ul class="space-y-3 text-ink-muted">
+      <li>[À COMPLÉTER PAR NILS — parcours / formation, BRIEF.md section&nbsp;13 #5]</li>
+      <li>[À COMPLÉTER PAR NILS — années d’expérience]</li>
+      <li>Clients clés : Porsche, GreenGo, Squarea, Hammaecher Sipion, Circuit des Écuyers</li>
+      <li>
+        Activités annexes :
+        <a
+          href="https://nuance.example"
+          rel="noopener"
+          class="underline-offset-4 hover:underline"
+          >nuance</a
+        >
+        (label/collectif électronique Strasbourg–Stuttgart–Freiburg), enseignement Ynov
+      </li>
+      <li>
+        Ce que je ne fais pas : mariages, portraits famille, événements privés
+      </li>
+    </ul>
+  </ScrollReveal>
+
+  <ScrollReveal client:visible as="section" className="container-page py-24 max-w-prose">
+    <p class="text-lg">
+      <a href="/contact" class="border-b border-ink pb-0.5 hover:text-ink-muted">
+        Démarrer un brief →
+      </a>
+    </p>
+  </ScrollReveal>
 </BaseLayout>

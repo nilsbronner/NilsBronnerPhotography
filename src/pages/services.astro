@@ -1,12 +1,119 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import ScrollReveal from '@/components/motion/ScrollReveal';
+
+const services = [
+  {
+    title: 'Campagnes marques avec cession de droits',
+    description:
+      'Direction photo complète pour campagnes print, digital, OOH. Cession négociée selon usage, durée, territoire.',
+  },
+  {
+    title: 'Photographie d’architecture & d’espaces',
+    description:
+      'Livraisons de chantier, éditorial architecture, intérieur. Lumière naturelle, volumes, matérialité.',
+  },
+  {
+    title: 'Brand content & packshot premium',
+    description:
+      'Visuels produit, lifestyle, environnement de marque. Production studio ou extérieur, retouche haut de gamme.',
+  },
+  {
+    title: 'Reportage corporate événementiel haut de gamme',
+    description:
+      'Conventions, lancements, soirées institutionnelles. Approche éditoriale, sélection rigoureuse.',
+  },
+  {
+    title: 'Portrait dirigeant·e & éditorial',
+    description:
+      'Portraits institutionnels, presse, rapports annuels. Direction, lumière, posture.',
+  },
+];
+
+const videoMention =
+  'Vidéo (Reels, branding) sur demande, en collaboration avec des partenaires identifiés.';
+
+const process = [
+  {
+    label: 'Brief',
+    body: 'Appel ou formulaire. On cadre objectifs, livrables, périmètre.',
+  },
+  {
+    label: 'Note d’intention & devis',
+    body: 'Proposition écrite avec moodboard, plan de tournage, budget.',
+  },
+  {
+    label: 'Production',
+    body: 'Repérage, prise de vue, direction artistique.',
+  },
+  {
+    label: 'Post-production',
+    body: 'Sélection, retouche, calibration, livraison.',
+  },
+  {
+    label: 'Suivi',
+    body: 'Option cession étendue, ré-utilisations, déclinaisons.',
+  },
+];
 ---
 
-<BaseLayout title="Services — Nils Bronner" description="Campagnes marques, architecture, brand content, événementiel corporate, portrait éditorial.">
-  <section class="container-page pt-24 md:pt-36 pb-24 max-w-prose">
+<BaseLayout
+  title="Services — Nils Bronner"
+  description="Campagnes, architecture, brand content, corporate, portrait éditorial. Devis sur brief qualifié."
+>
+  <section class="container-page pt-24 md:pt-36 pb-12 max-w-prose">
     <h1 class="heading-serif text-4xl md:text-6xl mb-8">Services</h1>
-    <p class="text-lg leading-relaxed text-ink-muted">
-      [À COMPLÉTER PAR NILS — liste des 5 services + process en 5 étapes, BRIEF.md section Services.]
+    <p class="text-lg text-ink-muted leading-relaxed">
+      Cinq domaines d’intervention, du plus rentable au plus exploratoire. Aucun tarif
+      affiché publiquement : devis sur brief qualifié.
     </p>
   </section>
+
+  <section class="container-page py-16 border-t border-border">
+    <ul class="space-y-12">
+      {
+        services.map((s, i) => (
+          <ScrollReveal client:visible as="li" delay={i === 0 ? 0 : 0.05}>
+            <article class="grid grid-cols-1 md:grid-cols-12 gap-6 max-w-5xl">
+              <div class="md:col-span-1 text-ink-muted tabular-nums text-sm pt-1">
+                {String(i + 1).padStart(2, '0')}
+              </div>
+              <div class="md:col-span-11">
+                <h2 class="heading-serif text-2xl md:text-3xl mb-2">{s.title}</h2>
+                <p class="text-ink-muted max-w-prose">{s.description}</p>
+              </div>
+            </article>
+          </ScrollReveal>
+        ))
+      }
+    </ul>
+    <p class="text-sm text-ink-muted mt-12 max-w-prose">{videoMention}</p>
+  </section>
+
+  <section class="container-page py-24 border-t border-border">
+    <h2 class="heading-serif text-3xl md:text-4xl mb-12">Process en 5 étapes</h2>
+    <ol class="grid grid-cols-1 md:grid-cols-5 gap-8 max-w-6xl">
+      {
+        process.map((step, i) => (
+          <ScrollReveal client:visible as="li" delay={i * 0.05}>
+            <div class="text-ink-muted tabular-nums text-xs uppercase tracking-widest mb-3">
+              Étape {i + 1}
+            </div>
+            <h3 class="heading-serif text-lg mb-2">{step.label}</h3>
+            <p class="text-sm text-ink-muted">{step.body}</p>
+          </ScrollReveal>
+        ))
+      }
+    </ol>
+  </section>
+
+  <ScrollReveal client:visible as="section" className="container-page py-32 text-center">
+    <h2 class="heading-serif text-4xl md:text-5xl mb-8">Un projet ? Parlons-en.</h2>
+    <a
+      href="/contact"
+      class="inline-block border-b border-ink pb-1 hover:text-ink-muted hover:border-ink-muted transition-colors text-lg"
+    >
+      Démarrer un brief
+    </a>
+  </ScrollReveal>
 </BaseLayout>
