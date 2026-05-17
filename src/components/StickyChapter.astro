@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  chapter: string;       // ex. "§ 02"
+  title: string;         // ex. "Atelier"
+  italic?: string;       // mot en italique à la fin du titre
+  description?: string;
+  images: { src: ImageMetadata; alt: string }[];
+}
+
+const { chapter, title, italic, description, images } = Astro.props;
+---
+
+<section class="sticky-chapter relative">
+  <div class="container-page grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+    <!-- Colonne gauche pinned (sticky) — titre du chapitre -->
+    <div class="md:col-span-4 md:sticky md:top-32 self-start py-12 md:py-24">
+      <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-6">
+        — {chapter}
+      </p>
+      <h2
+        class="heading-serif leading-[0.95] tracking-[-0.02em]"
+        style="font-size:clamp(2.25rem, 4.5vw, 4rem);"
+      >
+        {title}{italic && <><br /><span class="italic font-light">{italic}</span></>}
+      </h2>
+      {
+        description && (
+          <p class="mt-6 text-ink-muted leading-relaxed max-w-sm">
+            {description}
+          </p>
+        )
+      }
+    </div>
+
+    <!-- Colonne droite scrollante — images en stack vertical avec ratios variés -->
+    <ul class="md:col-span-8 space-y-12 md:space-y-24 py-12 md:py-24">
+      {
+        images.map((img, i) => {
+          const aspects = [
+            'aspect-[4/5]',
+            'aspect-[3/2]',
+            'aspect-[3/4]',
+            'aspect-[16/10]',
+            'aspect-[4/5]',
+          ];
+          const widths = [
+            'md:w-[78%] md:ml-auto',
+            'md:w-[88%]',
+            'md:w-[64%] md:ml-auto',
+            'md:w-full',
+            'md:w-[72%]',
+          ];
+          return (
+            <li class={`${widths[i] ?? 'md:w-full'} ${aspects[i] ?? 'aspect-[4/5]'} overflow-hidden bg-surface`}>
+              <Image
+                src={img.src}
+                alt={img.alt}
+                widths={[600, 900, 1400, 1800]}
+                sizes="(min-width: 1024px) 55vw, 100vw"
+                quality={84}
+                loading="lazy"
+                decoding="async"
+                class="w-full h-full object-cover"
+              />
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>

@@ -1,9 +1,12 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomeIntro from '@/components/motion/HomeIntro';
+import HeroParallax from '@/components/motion/HeroParallax';
+import ScrollScale from '@/components/motion/ScrollScale';
 import ScrollReveal from '@/components/motion/ScrollReveal';
 import ProjectCard from '@/components/ProjectCard.astro';
-import HorizontalGallery from '@/components/HorizontalGallery.astro';
+import StickyChapter from '@/components/StickyChapter.astro';
+import MinimalBreak from '@/components/MinimalBreak.astro';
 import FullBleedImage from '@/components/FullBleedImage.astro';
 import Marquee from '@/components/Marquee.astro';
 import { Image } from 'astro:assets';
@@ -11,37 +14,23 @@ import { getCollection } from 'astro:content';
 
 import homeHero from '@/assets/images/home/home-hero.jpg';
 
-// Images de galerie horizontale — pioche dans tous les projets
-import gArchi1 from '@/assets/images/architecture/architecture-01.jpg';
-import gArchi2 from '@/assets/images/architecture/architecture-02.jpg';
+// Galerie sticky chapter — pioche dans plusieurs projets
 import gEvt1 from '@/assets/images/evenementiel/evenementiel-01.jpg';
-import gEvt2 from '@/assets/images/evenementiel/evenementiel-02.jpg';
+import gArchi1 from '@/assets/images/architecture/architecture-01.jpg';
 import gPort1 from '@/assets/images/portrait/portrait-01.jpg';
-import gPort2 from '@/assets/images/portrait/portrait-02.jpg';
-import gBrand1 from '@/assets/images/brand-packshot/brand-packshot-01.jpg';
-import gRep1 from '@/assets/images/reportage/reportage-01.jpg';
 import gNuance1 from '@/assets/images/nuance/nuance-01.jpg';
-import gNuance2 from '@/assets/images/nuance/nuance-02.jpg';
-import gArchi3 from '@/assets/images/architecture/architecture-03.jpg';
-import gEvt3 from '@/assets/images/evenementiel/evenementiel-03.jpg';
+import gBrand1 from '@/assets/images/brand-packshot/brand-packshot-01.jpg';
 
-// Image pleine page entre les sections (immersive break)
+// Full-bleed breaks
 import breakImage1 from '@/assets/images/reportage/reportage-hero.jpg';
 import breakImage2 from '@/assets/images/portrait/portrait-hero.jpg';
 
-const galleryImages = [
-  { src: gEvt1, alt: 'Événement premium', caption: 'Événementiel · 2024' },
-  { src: gArchi1, alt: 'Architecture urbaine', caption: 'Architecture · 2024' },
-  { src: gPort1, alt: 'Portrait studio', caption: 'Portrait · 2024' },
-  { src: gNuance1, alt: 'nuance — projet auteur', caption: 'nuance · 2024' },
-  { src: gBrand1, alt: 'Brand content', caption: 'Brand · 2024' },
-  { src: gRep1, alt: 'Reportage corporate', caption: 'Reportage · 2024' },
-  { src: gArchi2, alt: 'Architecture', caption: 'Architecture · 2024' },
-  { src: gEvt2, alt: 'Événement', caption: 'Événementiel · 2024' },
-  { src: gPort2, alt: 'Portrait', caption: 'Portrait · 2024' },
-  { src: gNuance2, alt: 'nuance', caption: 'nuance · 2024' },
-  { src: gArchi3, alt: 'Architecture', caption: 'Architecture · 2024' },
-  { src: gEvt3, alt: 'Événement', caption: 'Événementiel · 2024' },
+const stickyImages = [
+  { src: gEvt1, alt: 'Événementiel premium' },
+  { src: gArchi1, alt: 'Architecture' },
+  { src: gPort1, alt: 'Portrait éditorial' },
+  { src: gNuance1, alt: 'nuance — projet auteur' },
+  { src: gBrand1, alt: 'Brand content' },
 ];
 
 const projects = (await getCollection('projects'))
@@ -97,56 +86,59 @@ const aspects = [
   />
 
   <!-- ════════════════════════════════════════════════════════════════
-       HERO — 100vh full screen image, immersif total
+       § HERO — 100svh, image parallax, immersif total
        ════════════════════════════════════════════════════════════════ -->
   <section
-    class="relative h-[100svh] min-h-[680px] -mt-16 md:-mt-20 flex items-end overflow-hidden bg-surface"
+    class="relative h-[100svh] min-h-[680px] -mt-16 md:-mt-20 overflow-hidden bg-surface"
   >
-    <Image
-      src={homeHero}
-      alt="Nils Bronner — image hero"
-      widths={[1200, 1600, 2000, 2400]}
-      sizes="100vw"
-      quality={86}
-      loading="eager"
-      class="absolute inset-0 w-full h-full object-cover"
-    />
-    <!-- Triple overlay : grain, dégradé bas, vignette latérale -->
-    <div
-      class="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-bg/10 pointer-events-none"
-    >
-    </div>
+    <!-- Image en parallax (translate Y au scroll, intensité 50px) -->
+    <HeroParallax client:load intensity={60} className="absolute inset-0 w-full h-[110%]">
+      <Image
+        src={homeHero}
+        alt="Nils Bronner — image hero"
+        widths={[1200, 1600, 2000, 2400]}
+        sizes="100vw"
+        quality={86}
+        loading="eager"
+        class="w-full h-full object-cover"
+      />
+    </HeroParallax>
+
+    <div class="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-bg/10 pointer-events-none" />
     <div
       class="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none"
       style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><filter id=%22n%22><feTurbulence baseFrequency=%220.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/></filter><rect width=%22120%22 height=%22120%22 filter=%22url(%23n)%22/></svg>');"
     >
     </div>
 
-    <!-- Coordonnées éditoriales -->
+    <!-- Coordonnées éditoriales (au-dessus du parallax) -->
     <div class="absolute top-24 md:top-28 left-0 right-0 container-page flex justify-between text-ink/60 text-[10px] uppercase tracking-[0.3em] font-sans">
       <span>Strasbourg · FR</span>
       <span class="hidden md:inline tabular-nums">N 48.58° · E 7.75°</span>
       <span class="tabular-nums">2026 ©</span>
     </div>
 
-    <HomeIntro client:load>
-      <div class="container-page pb-20 md:pb-24 relative">
-        <p class="text-ink/60 text-[10px] uppercase tracking-[0.3em] mb-6 md:mb-8">
-          — Photographe · Marques, Agences, Institutions
-        </p>
-        <h1
-          class="font-serif text-ink leading-[0.92] tracking-[-0.025em] max-w-[14ch]"
-          style="font-size:clamp(3rem, 11vw, 11rem);"
-        >
-          L’image <span class="italic font-light">qui restera.</span>
-        </h1>
-        <div class="mt-10 md:mt-14 flex flex-wrap gap-x-12 gap-y-4 items-baseline text-ink/70 text-[10px] uppercase tracking-[0.3em] font-sans">
-          <span>— Précis</span>
-          <span>— Narratif</span>
-          <span>— Tenu</span>
+    <!-- Titre, ancré bas — pas dans le parallax pour rester lisible -->
+    <div class="absolute inset-0 flex items-end pointer-events-none">
+      <HomeIntro client:load>
+        <div class="container-page pb-20 md:pb-24 relative pointer-events-auto">
+          <p class="text-ink/60 text-[10px] uppercase tracking-[0.3em] mb-6 md:mb-8">
+            — Photographe · Marques, Agences, Institutions
+          </p>
+          <h1
+            class="font-serif text-ink leading-[0.92] tracking-[-0.025em] max-w-[14ch]"
+            style="font-size:clamp(3rem, 11vw, 11rem);"
+          >
+            L’image <span class="italic font-light">qui restera.</span>
+          </h1>
+          <div class="mt-10 md:mt-14 flex flex-wrap gap-x-12 gap-y-4 items-baseline text-ink/70 text-[10px] uppercase tracking-[0.3em] font-sans">
+            <span>— Précis</span>
+            <span>— Narratif</span>
+            <span>— Tenu</span>
+          </div>
         </div>
-      </div>
-    </HomeIntro>
+      </HomeIntro>
+    </div>
 
     <!-- Indicateur scroll -->
     <div class="absolute bottom-8 right-0 container-page pointer-events-none">
@@ -158,12 +150,34 @@ const aspects = [
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       MANIFESTE COURT — éditorial, 2 colonnes, peu d'air entre les images
+       § MINIMAL BREAK — souffle après le hero massif
+       ════════════════════════════════════════════════════════════════ -->
+  <MinimalBreak
+    eyebrow="§ 01 / Posture"
+    text="Je crois aux images"
+    italic="qui tiennent."
+    height="medium"
+  />
+
+  <!-- ════════════════════════════════════════════════════════════════
+       § FULL BLEED IMAGE — immersif, citation
+       ════════════════════════════════════════════════════════════════ -->
+  <ScrollScale client:visible>
+    <FullBleedImage
+      src={breakImage1}
+      alt="Le réel composé"
+      height="92vh"
+      overlayText="Construire l’image qui restera."
+    />
+  </ScrollScale>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       § MINIMAL — manifeste 2 colonnes éditorial
        ════════════════════════════════════════════════════════════════ -->
   <section class="container-page py-28 md:py-40">
     <ScrollReveal client:visible>
       <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-12">
-        — § 01 / Manifeste
+        — § 02 / Manifeste
       </p>
     </ScrollReveal>
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
@@ -172,18 +186,14 @@ const aspects = [
           class="heading-serif leading-[0.98] tracking-[-0.02em]"
           style="font-size:clamp(2.25rem, 5.5vw, 5rem);"
         >
-          Je crois aux images <span class="italic font-light">qui tiennent.</span>
+          Produire moins, <span class="italic font-light">produire ce qui restera.</span>
         </h2>
       </ScrollReveal>
       <ScrollReveal client:visible as="div" className="md:col-span-5 md:col-start-8 space-y-5 text-ink-muted leading-relaxed text-lg max-w-prose">
         <p>
-          Celles qui ne meurent pas trois jours après la campagne. Celles qui
-          survivent au scroll et restent dans une mémoire.
-        </p>
-        <p>
           Pour ça, il faut du temps, de la lumière et un point de vue. Je travaille
           avec des marques, des agences et des institutions qui partagent cette
-          exigence&nbsp;: produire moins, mais produire ce qui restera.
+          exigence.
         </p>
         <p class="pt-2">
           <a href="/about" class="text-ink border-b border-ink/30 hover:border-ink pb-0.5 transition-colors">
@@ -195,62 +205,42 @@ const aspects = [
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       GALERIE HORIZONTALE — scroll latéral, 12 images
+       § ATELIER — sticky chapter (titre pinned + images défilantes)
        ════════════════════════════════════════════════════════════════ -->
-  <section class="pb-24 md:pb-32">
-    <div class="container-page mb-10 md:mb-14 flex items-end justify-between">
-      <div>
-        <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-4">
-          — § 02 / Atelier
-        </p>
-        <h2
-          class="heading-serif leading-[0.95] tracking-[-0.02em]"
-          style="font-size:clamp(2rem, 5vw, 4rem);"
-        >
-          Extraits récents
-        </h2>
-      </div>
-      <p class="hidden md:block text-ink-muted text-xs tracking-[0.2em] uppercase tabular-nums">
-        Faites défiler →
-      </p>
-    </div>
-    <HorizontalGallery images={galleryImages} />
-  </section>
-
-  <!-- ════════════════════════════════════════════════════════════════
-       FULL BLEED IMAGE BREAK 1 — immersif, citation
-       ════════════════════════════════════════════════════════════════ -->
-  <FullBleedImage
-    src={breakImage1}
-    alt="Lecture du réel"
-    height="78vh"
-    overlayText="Construire l’image qui restera."
+  <StickyChapter
+    chapter="§ 03"
+    title="Atelier"
+    italic="—  l'écriture."
+    description="Cinq extraits récents. Chaque image est une lecture composée du réel, pas un constat."
+    images={stickyImages}
   />
 
   <!-- ════════════════════════════════════════════════════════════════
-       PORTFOLIO ASYMÉTRIQUE — 6 univers
+       § FULL BLEED IMAGE 2
        ════════════════════════════════════════════════════════════════ -->
-  <section class="container-page py-28 md:py-40">
-    <div class="flex items-end justify-between mb-16 md:mb-24">
-      <div>
-        <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-4">
-          — § 03 / Travaux
-        </p>
-        <h2
-          class="heading-serif leading-[0.95] tracking-[-0.02em]"
-          style="font-size:clamp(2.5rem, 6vw, 5rem);"
-        >
-          Six univers, <span class="italic font-light">une écriture.</span>
-        </h2>
-      </div>
-      <a
-        href="/work"
-        class="hidden md:inline-block text-sm border-b border-ink/40 pb-0.5 hover:border-ink transition-colors shrink-0"
-      >
-        Tout voir →
-      </a>
-    </div>
+  <ScrollScale client:visible>
+    <FullBleedImage
+      src={breakImage2}
+      alt="Portrait éditorial"
+      height="92vh"
+      overlayText="Le regard cadre, hiérarchise, tient la scène."
+    />
+  </ScrollScale>
 
+  <!-- ════════════════════════════════════════════════════════════════
+       § MINIMAL — passage à la sélection
+       ════════════════════════════════════════════════════════════════ -->
+  <MinimalBreak
+    eyebrow="§ 04 / Sélection"
+    text="Six univers,"
+    italic="une écriture."
+    height="short"
+  />
+
+  <!-- ════════════════════════════════════════════════════════════════
+       § PORTFOLIO ASYMÉTRIQUE
+       ════════════════════════════════════════════════════════════════ -->
+  <section class="container-page pb-28 md:pb-40">
     <ul class="grid grid-cols-1 md:grid-cols-12 gap-x-6 md:gap-x-8 gap-y-20 md:gap-y-40">
       {
         projects.map((project, i) => {
@@ -280,43 +270,33 @@ const aspects = [
       }
     </ul>
 
-    <div class="mt-20 md:hidden">
-      <a href="/work" class="text-sm border-b border-ink/40 pb-0.5">
+    <div class="mt-24 text-center">
+      <a href="/work" class="inline-block text-lg border-b border-ink/40 pb-1 hover:border-ink transition-colors">
         Voir tous les projets →
       </a>
     </div>
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       FULL BLEED IMAGE BREAK 2 — portrait
+       § MARQUEE CLIENTS
        ════════════════════════════════════════════════════════════════ -->
-  <FullBleedImage
-    src={breakImage2}
-    alt="Portrait éditorial"
-    height="85vh"
-    overlayText="Le regard cadre, hiérarchise, tient la scène."
-  />
-
-  <!-- ════════════════════════════════════════════════════════════════
-       MARQUEE CLIENTS — défilement lent
-       ════════════════════════════════════════════════════════════════ -->
-  <section class="py-24 md:py-32 border-y border-border">
+  <section class="py-20 md:py-28 border-y border-border">
     <div class="container-page mb-10">
       <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted">
-        — § 04 / Confiance
+        — § 05 / Confiance
       </p>
     </div>
     <Marquee items={clients} duration={70} />
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       CTA FINAL — gros chiffre, typographie franche
+       § CTA FINAL
        ════════════════════════════════════════════════════════════════ -->
   <section class="container-page py-32 md:py-48">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
       <ScrollReveal client:visible as="div" className="md:col-span-2">
         <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted">
-          — § 05
+          — § 06
         </p>
       </ScrollReveal>
       <ScrollReveal client:visible as="div" className="md:col-span-10">

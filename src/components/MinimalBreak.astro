@@ -1,0 +1,39 @@
+---
+/**
+ * Section texte respirante entre deux blocs d'images.
+ * Aération maximale, typographie qui prend toute la place.
+ * Donne le rythme "image → souffle → image".
+ */
+interface Props {
+  eyebrow?: string;
+  text: string;        // texte court, mots-clés
+  italic?: string;     // partie en italique
+  height?: 'short' | 'medium' | 'tall';
+}
+
+const { eyebrow, text, italic, height = 'medium' } = Astro.props;
+
+const heights = {
+  short: 'py-24 md:py-32',
+  medium: 'py-40 md:py-56',
+  tall: 'py-56 md:py-80',
+};
+---
+
+<section class={heights[height]}>
+  <div class="container-page text-center">
+    {
+      eyebrow && (
+        <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-10">
+          — {eyebrow}
+        </p>
+      )
+    }
+    <p
+      class="heading-serif leading-[1.05] tracking-[-0.02em] mx-auto max-w-[24ch]"
+      style="font-size:clamp(2rem, 6vw, 5.5rem);"
+    >
+      {text}{italic && <> <span class="italic font-light">{italic}</span></>}
+    </p>
+  </div>
+</section>
