@@ -13,6 +13,7 @@ export default {
         'ink-muted': 'var(--ink-muted)',
         accent: 'var(--accent)',
         border: 'var(--border)',
+        surface: 'var(--surface)',
       },
       maxWidth: {
         prose: '65ch',

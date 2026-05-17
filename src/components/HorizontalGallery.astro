@@ -1,0 +1,94 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  images: { src: ImageMetadata; alt: string; caption?: string }[];
+}
+
+const { images } = Astro.props;
+---
+
+<div class="hgallery">
+  <div class="hgallery__track">
+    {
+      images.map((img) => (
+        <figure class="hgallery__item">
+          <div class="hgallery__media">
+            <Image
+              src={img.src}
+              alt={img.alt}
+              widths={[600, 900, 1200]}
+              sizes="(min-width: 1024px) 40vw, 80vw"
+              quality={82}
+              loading="lazy"
+              decoding="async"
+              class="hgallery__img"
+            />
+          </div>
+          {img.caption && (
+            <figcaption class="hgallery__caption">{img.caption}</figcaption>
+          )}
+        </figure>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .hgallery {
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .hgallery::-webkit-scrollbar {
+    display: none;
+  }
+  .hgallery__track {
+    display: flex;
+    gap: 1.25rem;
+    padding: 0 1.5rem;
+    width: max-content;
+  }
+  @media (min-width: 768px) {
+    .hgallery__track {
+      gap: 2rem;
+      padding: 0 2rem;
+    }
+  }
+  .hgallery__item {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    width: 78vw;
+    max-width: 720px;
+  }
+  @media (min-width: 1024px) {
+    .hgallery__item {
+      width: 40vw;
+      max-width: 640px;
+    }
+  }
+  .hgallery__media {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .hgallery__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hgallery__item:hover .hgallery__img {
+    transform: scale(1.03);
+  }
+  .hgallery__caption {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+</style>

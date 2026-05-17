@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  /** Hauteur viewport — '70vh' léger, '100vh' immersif total */
+  height?: string;
+  caption?: string;
+  /** Légende positionnée sur l'image */
+  overlayText?: string;
+}
+
+const { src, alt, height = '85vh', caption, overlayText } = Astro.props;
+---
+
+<section
+  class="fullbleed relative overflow-hidden bg-surface"
+  style={`height:${height};min-height:480px;`}
+>
+  <Image
+    src={src}
+    alt={alt}
+    widths={[1200, 1800, 2400]}
+    sizes="100vw"
+    quality={84}
+    loading="lazy"
+    decoding="async"
+    class="absolute inset-0 w-full h-full object-cover"
+  />
+  {
+    overlayText && (
+      <>
+        <div class="absolute inset-0 bg-gradient-to-t from-bg/70 via-bg/20 to-transparent pointer-events-none" />
+        <p class="absolute bottom-8 md:bottom-12 left-0 right-0 container-page heading-serif text-ink leading-[0.95] max-w-[24ch] text-3xl md:text-5xl lg:text-6xl italic font-light">
+          {overlayText}
+        </p>
+      </>
+    )
+  }
+  {
+    caption && !overlayText && (
+      <p class="absolute bottom-4 right-6 text-ink/70 text-[10px] uppercase tracking-[0.25em]">
+        {caption}
+      </p>
+    )
+  }
+</section>

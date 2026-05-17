@@ -7,11 +7,13 @@
 
 @layer base {
   :root {
-    --bg: #FAFAF7;
-    --ink: #111111;
-    --ink-muted: #555555;
-    --accent: #D9491E;
-    --border: #E5E5E0;
+    /* Dark palette — noir chaud, pas pur. Évite le cliché grimey. */
+    --bg: #0C0B09;
+    --ink: #F2EFE9;
+    --ink-muted: #8A857B;
+    --accent: #E6502A;
+    --border: #1F1D18;
+    --surface: #14120F;
   }
 
   html {

@@ -3,17 +3,52 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomeIntro from '@/components/motion/HomeIntro';
 import ScrollReveal from '@/components/motion/ScrollReveal';
 import ProjectCard from '@/components/ProjectCard.astro';
+import HorizontalGallery from '@/components/HorizontalGallery.astro';
+import FullBleedImage from '@/components/FullBleedImage.astro';
 import Marquee from '@/components/Marquee.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
+
 import homeHero from '@/assets/images/home/home-hero.jpg';
+
+// Images de galerie horizontale — pioche dans tous les projets
+import gArchi1 from '@/assets/images/architecture/architecture-01.jpg';
+import gArchi2 from '@/assets/images/architecture/architecture-02.jpg';
+import gEvt1 from '@/assets/images/evenementiel/evenementiel-01.jpg';
+import gEvt2 from '@/assets/images/evenementiel/evenementiel-02.jpg';
+import gPort1 from '@/assets/images/portrait/portrait-01.jpg';
+import gPort2 from '@/assets/images/portrait/portrait-02.jpg';
+import gBrand1 from '@/assets/images/brand-packshot/brand-packshot-01.jpg';
+import gRep1 from '@/assets/images/reportage/reportage-01.jpg';
+import gNuance1 from '@/assets/images/nuance/nuance-01.jpg';
+import gNuance2 from '@/assets/images/nuance/nuance-02.jpg';
+import gArchi3 from '@/assets/images/architecture/architecture-03.jpg';
+import gEvt3 from '@/assets/images/evenementiel/evenementiel-03.jpg';
+
+// Image pleine page entre les sections (immersive break)
+import breakImage1 from '@/assets/images/reportage/reportage-hero.jpg';
+import breakImage2 from '@/assets/images/portrait/portrait-hero.jpg';
+
+const galleryImages = [
+  { src: gEvt1, alt: 'Événement premium', caption: 'Événementiel · 2024' },
+  { src: gArchi1, alt: 'Architecture urbaine', caption: 'Architecture · 2024' },
+  { src: gPort1, alt: 'Portrait studio', caption: 'Portrait · 2024' },
+  { src: gNuance1, alt: 'nuance — projet auteur', caption: 'nuance · 2024' },
+  { src: gBrand1, alt: 'Brand content', caption: 'Brand · 2024' },
+  { src: gRep1, alt: 'Reportage corporate', caption: 'Reportage · 2024' },
+  { src: gArchi2, alt: 'Architecture', caption: 'Architecture · 2024' },
+  { src: gEvt2, alt: 'Événement', caption: 'Événementiel · 2024' },
+  { src: gPort2, alt: 'Portrait', caption: 'Portrait · 2024' },
+  { src: gNuance2, alt: 'nuance', caption: 'nuance · 2024' },
+  { src: gArchi3, alt: 'Architecture', caption: 'Architecture · 2024' },
+  { src: gEvt3, alt: 'Événement', caption: 'Événementiel · 2024' },
+];
 
 const projects = (await getCollection('projects'))
   .filter((p) => p.data.locale === 'fr')
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, 6);
 
-// Clients réels (BRIEF §1 + §6) — pas les thèmes du portfolio
 const clients = [
   'Porsche',
   'GreenGo',
@@ -26,7 +61,6 @@ const clients = [
   'nuance',
 ];
 
-// Ratios alternés pour grille asymétrique
 const aspects = [
   'aspect-[4/5]',
   'aspect-[3/2]',
@@ -58,65 +92,55 @@ const aspects = [
           addressLocality: 'Strasbourg',
           addressCountry: 'FR',
         },
-        knowsAbout: [
-          'photographie commerciale',
-          'photographie d’architecture',
-          'portrait éditorial',
-          'brand content',
-        ],
       },
     })}
   />
 
   <!-- ════════════════════════════════════════════════════════════════
-       HERO — full-bleed gradient, typographie massive, signature éditoriale
+       HERO — 100vh full screen image, immersif total
        ════════════════════════════════════════════════════════════════ -->
   <section
-    class="relative h-[88vh] min-h-[640px] -mt-16 md:-mt-20 flex items-end overflow-hidden bg-ink"
+    class="relative h-[100svh] min-h-[680px] -mt-16 md:-mt-20 flex items-end overflow-hidden bg-surface"
   >
     <Image
       src={homeHero}
       alt="Nils Bronner — image hero"
-      widths={[800, 1200, 1600, 2000, 2400]}
+      widths={[1200, 1600, 2000, 2400]}
       sizes="100vw"
-      quality={85}
+      quality={86}
       loading="eager"
-      class="absolute inset-0 w-full h-full object-cover opacity-[0.85]"
+      class="absolute inset-0 w-full h-full object-cover"
     />
-    <!-- Overlay sombre + dégradé pour lisibilité texte blanc -->
+    <!-- Triple overlay : grain, dégradé bas, vignette latérale -->
     <div
-      class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/40 to-ink/30 pointer-events-none"
+      class="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-bg/10 pointer-events-none"
     >
     </div>
-    <!-- Grain subtle pour texture premium -->
     <div
-      class="absolute inset-0 opacity-[0.08] mix-blend-overlay pointer-events-none"
+      class="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none"
       style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><filter id=%22n%22><feTurbulence baseFrequency=%220.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/></filter><rect width=%22120%22 height=%22120%22 filter=%22url(%23n)%22/></svg>');"
     >
     </div>
 
-    <!-- Coordonnées éditoriales top -->
-    <div class="absolute top-24 md:top-28 left-0 right-0 container-page flex justify-between text-bg/60 text-[11px] uppercase tracking-[0.25em] font-sans">
+    <!-- Coordonnées éditoriales -->
+    <div class="absolute top-24 md:top-28 left-0 right-0 container-page flex justify-between text-ink/60 text-[10px] uppercase tracking-[0.3em] font-sans">
       <span>Strasbourg · FR</span>
       <span class="hidden md:inline tabular-nums">N 48.58° · E 7.75°</span>
-      <span class="tabular-nums">© 2026</span>
+      <span class="tabular-nums">2026 ©</span>
     </div>
 
     <HomeIntro client:load>
-      <div class="container-page pb-16 md:pb-20 relative">
-        <h1
-          class="font-serif text-bg leading-[0.95] tracking-[-0.02em] max-w-[18ch]"
-          style="font-size:clamp(2.75rem, 8.5vw, 8rem);"
-        >
-          Photographe<br />
-          <span class="italic font-light">basé</span> à Strasbourg.
-        </h1>
-        <p class="mt-8 max-w-xl text-bg/75 text-base md:text-lg leading-relaxed">
-          Je crée des images pour les marques, agences et institutions qui exigent
-          un regard et une exécution irréprochables.
+      <div class="container-page pb-20 md:pb-24 relative">
+        <p class="text-ink/60 text-[10px] uppercase tracking-[0.3em] mb-6 md:mb-8">
+          — Photographe · Marques, Agences, Institutions
         </p>
-
-        <div class="mt-12 flex flex-wrap gap-x-12 gap-y-4 items-baseline text-bg/70 text-[11px] uppercase tracking-[0.25em] font-sans">
+        <h1
+          class="font-serif text-ink leading-[0.92] tracking-[-0.025em] max-w-[14ch]"
+          style="font-size:clamp(3rem, 11vw, 11rem);"
+        >
+          L’image <span class="italic font-light">qui restera.</span>
+        </h1>
+        <div class="mt-10 md:mt-14 flex flex-wrap gap-x-12 gap-y-4 items-baseline text-ink/70 text-[10px] uppercase tracking-[0.3em] font-sans">
           <span>— Précis</span>
           <span>— Narratif</span>
           <span>— Tenu</span>
@@ -124,31 +148,29 @@ const aspects = [
       </div>
     </HomeIntro>
 
-    <!-- Pagination repère bas droite -->
-    <div class="absolute bottom-16 md:bottom-20 right-0 container-page pointer-events-none">
-      <div class="flex justify-end items-end gap-3 text-bg/70 text-[11px] uppercase tracking-[0.25em] font-sans tabular-nums">
-        <span>01</span>
-        <span class="block w-12 h-px bg-bg/30"></span>
-        <span>06</span>
+    <!-- Indicateur scroll -->
+    <div class="absolute bottom-8 right-0 container-page pointer-events-none">
+      <div class="flex justify-end items-center gap-3 text-ink/60 text-[10px] uppercase tracking-[0.3em] font-sans">
+        <span class="hidden md:inline">Scroll</span>
+        <span class="block w-px h-12 bg-ink/40"></span>
       </div>
     </div>
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       MANIFESTE COURT — 2 colonnes, typographie éditoriale
+       MANIFESTE COURT — éditorial, 2 colonnes, peu d'air entre les images
        ════════════════════════════════════════════════════════════════ -->
-  <section class="container-page py-32 md:py-48">
+  <section class="container-page py-28 md:py-40">
     <ScrollReveal client:visible>
       <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-12">
         — § 01 / Manifeste
       </p>
     </ScrollReveal>
-
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
       <ScrollReveal client:visible as="div" className="md:col-span-7">
         <h2
           class="heading-serif leading-[0.98] tracking-[-0.02em]"
-          style="font-size:clamp(2rem, 5vw, 4.5rem);"
+          style="font-size:clamp(2.25rem, 5.5vw, 5rem);"
         >
           Je crois aux images <span class="italic font-light">qui tiennent.</span>
         </h2>
@@ -173,41 +195,72 @@ const aspects = [
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       PORTFOLIO ASYMÉTRIQUE — 6 projets, ratios variés, rythme éditorial
+       GALERIE HORIZONTALE — scroll latéral, 12 images
        ════════════════════════════════════════════════════════════════ -->
-  <section class="container-page pb-32 md:pb-48">
+  <section class="pb-24 md:pb-32">
+    <div class="container-page mb-10 md:mb-14 flex items-end justify-between">
+      <div>
+        <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-4">
+          — § 02 / Atelier
+        </p>
+        <h2
+          class="heading-serif leading-[0.95] tracking-[-0.02em]"
+          style="font-size:clamp(2rem, 5vw, 4rem);"
+        >
+          Extraits récents
+        </h2>
+      </div>
+      <p class="hidden md:block text-ink-muted text-xs tracking-[0.2em] uppercase tabular-nums">
+        Faites défiler →
+      </p>
+    </div>
+    <HorizontalGallery images={galleryImages} />
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       FULL BLEED IMAGE BREAK 1 — immersif, citation
+       ════════════════════════════════════════════════════════════════ -->
+  <FullBleedImage
+    src={breakImage1}
+    alt="Lecture du réel"
+    height="78vh"
+    overlayText="Construire l’image qui restera."
+  />
+
+  <!-- ════════════════════════════════════════════════════════════════
+       PORTFOLIO ASYMÉTRIQUE — 6 univers
+       ════════════════════════════════════════════════════════════════ -->
+  <section class="container-page py-28 md:py-40">
     <div class="flex items-end justify-between mb-16 md:mb-24">
       <div>
         <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-4">
-          — § 02 / Sélection
+          — § 03 / Travaux
         </p>
         <h2
           class="heading-serif leading-[0.95] tracking-[-0.02em]"
           style="font-size:clamp(2.5rem, 6vw, 5rem);"
         >
-          Travaux récents
+          Six univers, <span class="italic font-light">une écriture.</span>
         </h2>
       </div>
       <a
         href="/work"
-        class="hidden md:inline-block text-sm border-b border-ink pb-0.5 hover:text-ink-muted hover:border-ink-muted transition-colors shrink-0"
+        class="hidden md:inline-block text-sm border-b border-ink/40 pb-0.5 hover:border-ink transition-colors shrink-0"
       >
-        Tout voir
+        Tout voir →
       </a>
     </div>
 
-    <!-- Grille asymétrique : 12 colonnes, cards de tailles variées -->
-    <ul class="grid grid-cols-1 md:grid-cols-12 gap-x-6 md:gap-x-8 gap-y-20 md:gap-y-32">
+    <ul class="grid grid-cols-1 md:grid-cols-12 gap-x-6 md:gap-x-8 gap-y-20 md:gap-y-40">
       {
         projects.map((project, i) => {
-          // Pattern : feature(7col), small(5col), small(5col offset), feature(7col offset), small(6col), small(6col)
           const layouts = [
             'md:col-span-7',
-            'md:col-span-5 md:mt-32',
+            'md:col-span-5 md:mt-40',
             'md:col-span-5',
-            'md:col-span-7 md:mt-32',
+            'md:col-span-7 md:mt-40',
             'md:col-span-6',
-            'md:col-span-6 md:mt-32',
+            'md:col-span-6 md:mt-40',
           ];
           return (
             <li class={layouts[i] ?? 'md:col-span-6'}>
@@ -219,6 +272,7 @@ const aspects = [
                 tags={project.data.tags}
                 aspect={aspects[i] ?? 'aspect-[4/5]'}
                 thumbnail={project.data.thumbnail}
+                index={i}
               />
             </li>
           );
@@ -227,17 +281,29 @@ const aspects = [
     </ul>
 
     <div class="mt-20 md:hidden">
-      <a href="/work" class="text-sm border-b border-ink pb-0.5">Voir tous les projets →</a>
+      <a href="/work" class="text-sm border-b border-ink/40 pb-0.5">
+        Voir tous les projets →
+      </a>
     </div>
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       MARQUEE CLIENTS — défilement horizontal lent, premium
+       FULL BLEED IMAGE BREAK 2 — portrait
        ════════════════════════════════════════════════════════════════ -->
-  <section class="py-24 md:py-32 border-y border-border bg-bg">
+  <FullBleedImage
+    src={breakImage2}
+    alt="Portrait éditorial"
+    height="85vh"
+    overlayText="Le regard cadre, hiérarchise, tient la scène."
+  />
+
+  <!-- ════════════════════════════════════════════════════════════════
+       MARQUEE CLIENTS — défilement lent
+       ════════════════════════════════════════════════════════════════ -->
+  <section class="py-24 md:py-32 border-y border-border">
     <div class="container-page mb-10">
       <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted">
-        — § 03 / Confiance
+        — § 04 / Confiance
       </p>
     </div>
     <Marquee items={clients} duration={70} />
@@ -250,7 +316,7 @@ const aspects = [
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
       <ScrollReveal client:visible as="div" className="md:col-span-2">
         <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted">
-          — § 04
+          — § 05
         </p>
       </ScrollReveal>
       <ScrollReveal client:visible as="div" className="md:col-span-10">
@@ -263,7 +329,7 @@ const aspects = [
         <div class="mt-12 flex flex-wrap gap-x-12 gap-y-6">
           <a
             href="/contact"
-            class="inline-block text-lg border-b border-ink pb-1 hover:text-ink-muted hover:border-ink-muted transition-colors"
+            class="inline-block text-lg border-b border-ink/40 pb-1 hover:border-ink transition-colors"
           >
             Démarrer un brief →
           </a>

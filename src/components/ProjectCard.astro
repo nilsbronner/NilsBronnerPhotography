@@ -11,6 +11,8 @@ interface Props {
   tags: string[];
   aspect?: string;
   thumbnail?: ImageMetadata;
+  /** Index pour le numéro éditorial */
+  index?: number;
 }
 
 const {
@@ -21,14 +23,16 @@ const {
   tags,
   aspect = 'aspect-[4/5]',
   thumbnail,
+  index,
 } = Astro.props;
 
 const grad = gradientFor(slug);
+const num = index !== undefined ? String(index + 1).padStart(2, '0') : null;
 ---
 
-<a href={`/work/${slug}`} class="group block" data-cursor="VIEW">
+<a href={`/work/${slug}`} class="card group block" data-cursor="VIEW">
   <div
-    class={`relative overflow-hidden ${aspect} bg-border`}
+    class={`card__media relative overflow-hidden ${aspect} bg-surface`}
     style={thumbnail ? undefined : `background:${grad.background};filter:${grad.filter};`}
   >
     {
@@ -38,7 +42,7 @@ const grad = gradientFor(slug);
           alt={`${client} — projet de Nils Bronner`}
           widths={[480, 800, 1200, 1600]}
           sizes="(min-width: 1024px) 50vw, 100vw"
-          class="absolute inset-0 w-full h-full object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+          class="card__img absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
           loading="lazy"
           decoding="async"
           quality={82}
@@ -46,33 +50,52 @@ const grad = gradientFor(slug);
       )
     }
 
+    <!-- Cadre éditorial coins -->
+    {
+      num && (
+        <span class="absolute top-5 left-5 text-ink/90 text-[10px] tracking-[0.3em] uppercase font-sans tabular-nums">
+          {num} /
+        </span>
+      )
+    }
     <span
-      class="absolute top-4 left-4 text-bg/70 text-xs tracking-[0.25em] uppercase font-sans drop-shadow"
-    >
-      — Projet
-    </span>
-    <span
-      class="absolute bottom-4 right-4 text-bg/70 text-xs tracking-[0.25em] uppercase font-sans tabular-nums drop-shadow"
+      class="absolute bottom-5 left-5 text-ink/80 text-[10px] tracking-[0.3em] uppercase font-sans tabular-nums"
     >
       {year}
     </span>
-
-    <div
-      class="absolute inset-0 bg-ink/0 group-hover:bg-ink/10 transition-colors duration-500"
+    <span
+      class="absolute bottom-5 right-5 text-ink/80 text-[10px] tracking-[0.3em] uppercase font-sans inline-flex items-center gap-2 transition-transform duration-500 group-hover:translate-x-1"
     >
+      Voir →
+    </span>
+
+    <!-- Overlay sombre s'intensifie au hover pour lecture du label -->
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-bg/80 via-bg/0 to-bg/0 opacity-70 group-hover:opacity-95 transition-opacity duration-500 pointer-events-none"
+    >
+    </div>
+
+    <!-- Label client en bas, monte légèrement au hover -->
+    <div
+      class="absolute bottom-12 left-5 right-5 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1"
+    >
+      <h3 class="heading-serif text-ink text-2xl md:text-3xl tracking-tight leading-tight">
+        {client}
+      </h3>
+      <ul class="flex flex-wrap gap-x-3 mt-2 text-[10px] uppercase tracking-[0.2em] text-ink/70">
+        {tags.slice(0, 3).map((tag) => <li>— {tag}</li>)}
+      </ul>
     </div>
   </div>
 
-  <div class="mt-5 flex items-baseline justify-between">
-    <h3 class="heading-serif text-xl md:text-2xl tracking-tight">
-      {client}
-    </h3>
-    <span class="text-ink-muted text-sm tabular-nums shrink-0 ml-4">↗</span>
-  </div>
-
-  <p class="text-ink-muted text-sm mt-1 max-w-md leading-relaxed">{summary}</p>
-
-  <ul class="flex flex-wrap gap-x-3 mt-3 text-[10px] uppercase tracking-[0.18em] text-ink-muted">
-    {tags.map((tag) => <li>{tag}</li>)}
-  </ul>
+  <!-- Description en dessous, hors image -->
+  <p class="card__summary text-ink-muted text-sm mt-5 max-w-md leading-relaxed">
+    {summary}
+  </p>
 </a>
+
+<style>
+  .card__media {
+    border-radius: 2px;
+  }
+</style>
