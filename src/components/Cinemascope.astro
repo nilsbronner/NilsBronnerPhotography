@@ -1,0 +1,99 @@
+---
+import { Image } from 'astro:assets';
+import KenBurns from '@/components/motion/KenBurns';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  /** Numéro de chapitre / scène, ex. "SC. 03" */
+  scene?: string;
+  /** Texte timecode, ex. "01:23 / 06:50" */
+  timecode?: string;
+  /** Titre overlay sur l'image */
+  title?: string;
+  italic?: string;
+  /** Ken Burns slow zoom (off pour les sections multiples) */
+  kenBurns?: boolean;
+}
+
+const { src, alt, scene, timecode, title, italic, kenBurns = true } = Astro.props;
+---
+
+<!-- Cinemascope : ratio 2.39:1, letterbox top/bottom, plan large -->
+<section class="relative bg-bg py-6 md:py-10 overflow-hidden">
+  <div
+    class="relative w-full bg-surface overflow-hidden"
+    style="aspect-ratio: 2.39 / 1; min-height: 320px;"
+  >
+    {
+      kenBurns ? (
+        <KenBurns client:visible duration={32} className="absolute inset-0 w-full h-full">
+          <Image
+            src={src}
+            alt={alt}
+            widths={[1200, 1800, 2400, 3000]}
+            sizes="100vw"
+            quality={86}
+            loading="lazy"
+            decoding="async"
+            class="w-full h-full object-cover"
+          />
+        </KenBurns>
+      ) : (
+        <Image
+          src={src}
+          alt={alt}
+          widths={[1200, 1800, 2400, 3000]}
+          sizes="100vw"
+          quality={86}
+          loading="lazy"
+          decoding="async"
+          class="absolute inset-0 w-full h-full object-cover"
+        />
+      )
+    }
+
+    <!-- Letterbox bands subtils (renforcent le ratio cinema) -->
+    <div class="absolute inset-x-0 top-0 h-px bg-ink/20 pointer-events-none"></div>
+    <div class="absolute inset-x-0 bottom-0 h-px bg-ink/20 pointer-events-none"></div>
+
+    <!-- Vignette légère -->
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="background: radial-gradient(ellipse at center, transparent 50%, rgba(12,11,9,0.6) 100%);"
+    >
+    </div>
+
+    <!-- Grain subtle pour texture pellicule -->
+    <div
+      class="absolute inset-0 opacity-[0.08] mix-blend-overlay pointer-events-none"
+      style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22160%22><filter id=%22n%22><feTurbulence baseFrequency=%221.1%22 numOctaves=%222%22 stitchTiles=%22stitch%22/></filter><rect width=%22160%22 height=%22160%22 filter=%22url(%23n)%22/></svg>');"
+    >
+    </div>
+
+    <!-- HUD cinema : scène + timecode -->
+    {
+      (scene || timecode) && (
+        <div class="absolute top-4 md:top-6 left-0 right-0 px-4 md:px-8 flex justify-between text-ink/70 text-[10px] uppercase tracking-[0.3em] font-sans">
+          {scene && <span>{scene}</span>}
+          {timecode && <span class="tabular-nums">{timecode}</span>}
+        </div>
+      )
+    }
+
+    <!-- Titre overlay au tiers inférieur (composition cinéma) -->
+    {
+      title && (
+        <div class="absolute bottom-6 md:bottom-10 left-0 right-0 px-6 md:px-12">
+          <p
+            class="heading-serif text-ink leading-[0.95] max-w-[22ch] tracking-[-0.02em]"
+            style="font-size:clamp(1.5rem, 3.5vw, 3.5rem);"
+          >
+            {title}{italic && <> <span class="italic font-light">{italic}</span></>}
+          </p>
+        </div>
+      )
+    }
+  </div>
+</section>
