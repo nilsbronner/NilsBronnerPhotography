@@ -1,0 +1,44 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects'))
+  .filter((p) => p.data.locale === 'fr')
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Work — Nils Bronner" description="Sélection de projets : campagnes, architecture, éditorial.">
+  <section class="container-page pt-24 md:pt-36 pb-12">
+    <h1 class="heading-serif text-4xl md:text-6xl">Work</h1>
+    <p class="mt-4 text-ink-muted max-w-2xl">
+      [À COMPLÉTER PAR NILS — intro Work, BRIEF.md.]
+    </p>
+  </section>
+
+  <!-- Toggle + grille filtrable arrivent au Sprint 2 -->
+  <section class="container-page pb-32">
+    <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+      {
+        projects.map((project) => (
+          <li>
+            <a href={`/work/${project.slug}`} class="block group">
+              <div class="aspect-[4/5] bg-border mb-4 overflow-hidden">
+                <div class="w-full h-full bg-gradient-to-br from-border to-bg" />
+              </div>
+              <div class="flex items-baseline justify-between">
+                <h2 class="heading-serif text-lg">{project.data.client}</h2>
+                <span class="text-ink-muted text-sm tabular-nums">{project.data.year}</span>
+              </div>
+              <p class="text-ink-muted text-sm mt-1">{project.data.summary}</p>
+              <ul class="flex flex-wrap gap-2 mt-2">
+                {project.data.tags.map((tag) => (
+                  <li class="text-xs text-ink-muted uppercase tracking-wider">{tag}</li>
+                ))}
+              </ul>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

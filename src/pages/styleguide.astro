@@ -1,0 +1,116 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ScrollReveal from '@/components/motion/ScrollReveal';
+import HomeIntro from '@/components/motion/HomeIntro';
+---
+
+<BaseLayout title="Styleguide (interne)" description="Référence design system." noindex>
+  <section class="container-page pt-24 pb-16">
+    <p class="text-xs text-ink-muted uppercase tracking-widest mb-4">Interne — non listée</p>
+    <h1 class="heading-serif text-4xl md:text-5xl">Styleguide</h1>
+  </section>
+
+  <!-- Typographies -->
+  <section class="container-page py-16 border-t border-border space-y-8">
+    <h2 class="heading-serif text-2xl">Typographies</h2>
+    <div>
+      <p class="text-xs text-ink-muted uppercase tracking-widest">Serif — Fraunces</p>
+      <p class="heading-serif text-6xl">Aa Bb Cc</p>
+      <p class="heading-serif text-3xl">Titre niveau 2</p>
+      <p class="heading-serif text-xl">Titre niveau 3</p>
+    </div>
+    <div>
+      <p class="text-xs text-ink-muted uppercase tracking-widest">Sans — Inter</p>
+      <p class="text-lg">Le sérieux d’un studio premium se ressent au premier regard.</p>
+      <p class="text-base text-ink-muted">Texte courant 16px — Inter Variable.</p>
+      <p class="text-sm text-ink-muted">Texte secondaire 14px.</p>
+    </div>
+  </section>
+
+  <!-- Couleurs -->
+  <section class="container-page py-16 border-t border-border">
+    <h2 class="heading-serif text-2xl mb-8">Couleurs</h2>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div>
+        <div class="aspect-square bg-bg border border-border" />
+        <p class="text-xs mt-2">--bg #FAFAF7</p>
+      </div>
+      <div>
+        <div class="aspect-square bg-ink" />
+        <p class="text-xs mt-2">--ink #111111</p>
+      </div>
+      <div>
+        <div class="aspect-square bg-ink-muted" />
+        <p class="text-xs mt-2">--ink-muted #555555</p>
+      </div>
+      <div>
+        <div class="aspect-square bg-accent" />
+        <p class="text-xs mt-2">--accent #D9491E</p>
+      </div>
+      <div>
+        <div class="aspect-square bg-border" />
+        <p class="text-xs mt-2">--border #E5E5E0</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boutons / liens -->
+  <section class="container-page py-16 border-t border-border">
+    <h2 class="heading-serif text-2xl mb-8">Liens & CTA</h2>
+    <div class="space-x-8">
+      <a href="#" class="border-b border-ink pb-0.5 hover:text-ink-muted">Lien CTA principal</a>
+      <a href="#" class="text-ink-muted hover:text-ink transition-colors">Lien secondaire</a>
+    </div>
+  </section>
+
+  <!-- Motion : page transition (par défaut via PageTransition wrapper) -->
+  <section class="container-page py-16 border-t border-border">
+    <h2 class="heading-serif text-2xl mb-2">Motion — page transition</h2>
+    <p class="text-sm text-ink-muted mb-6">Hydratation client:idle, fade 700ms à l’entrée, 500ms en sortie.</p>
+    <p class="text-ink-muted">Cette page entière utilise PageTransition. Naviguez vers /work et revenez pour voir le fade.</p>
+  </section>
+
+  <!-- Motion : HomeIntro (fade in global) -->
+  <section class="container-page py-16 border-t border-border">
+    <h2 class="heading-serif text-2xl mb-2">Motion — fade in global (HomeIntro)</h2>
+    <p class="text-sm text-ink-muted mb-6">Un seul fade, 700ms. Pas de stagger.</p>
+    <HomeIntro client:load>
+      <div class="p-6 border border-border">
+        <p class="heading-serif text-3xl">Bloc qui fade in une seule fois</p>
+        <p class="text-ink-muted mt-2">Recharger la page pour rejouer.</p>
+      </div>
+    </HomeIntro>
+  </section>
+
+  <!-- Motion : ScrollReveal -->
+  <section class="container-page py-16 border-t border-border">
+    <h2 class="heading-serif text-2xl mb-2">Motion — ScrollReveal (fade up)</h2>
+    <p class="text-sm text-ink-muted mb-6">whileInView + viewport once, margin -10%.</p>
+    <div class="space-y-32">
+      <ScrollReveal client:visible>
+        <div class="p-6 border border-border">
+          <p class="heading-serif text-3xl">Bloc 1 — scroll pour révéler</p>
+        </div>
+      </ScrollReveal>
+      <ScrollReveal client:visible delay={0.05}>
+        <div class="p-6 border border-border">
+          <p class="heading-serif text-3xl">Bloc 2 — délai 50ms</p>
+        </div>
+      </ScrollReveal>
+      <ScrollReveal client:visible>
+        <div class="p-6 border border-border">
+          <p class="heading-serif text-3xl">Bloc 3</p>
+        </div>
+      </ScrollReveal>
+    </div>
+  </section>
+
+  <!-- Motion : ScaleIn démo (déclenchée via key change) -->
+  <section class="container-page py-16 border-t border-border">
+    <h2 class="heading-serif text-2xl mb-2">Motion — variants centralisés</h2>
+    <p class="text-sm text-ink-muted">
+      Tous les variants (<code>fadeIn</code>, <code>fadeUp</code>, <code>scaleIn</code>, <code>pageTransition</code>)
+      vivent dans <code>src/lib/motion-config.ts</code>. Aucune redéfinition ad hoc autorisée.
+    </p>
+  </section>
+</BaseLayout>

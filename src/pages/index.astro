@@ -1,0 +1,84 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import HomeIntro from '@/components/motion/HomeIntro';
+import ScrollReveal from '@/components/motion/ScrollReveal';
+import { getCollection } from 'astro:content';
+import { t, type Locale } from '@/lib/i18n';
+
+const locale: Locale = 'fr';
+
+const projects = (await getCollection('projects'))
+  .filter((p) => p.data.locale === 'fr')
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 6);
+
+const clients = ['Porsche', 'GreenGo', 'Squarea', 'Hammaecher', 'Les Écuyers', 'Nuance'];
+---
+
+<BaseLayout
+  title="Nils Bronner — Photographe, Strasbourg"
+  description="Photographe basé à Strasbourg. Campagnes marques, architecture, portrait éditorial."
+>
+  <!-- Hero / manifeste -->
+  <section class="container-page pt-24 md:pt-36 pb-24 md:pb-32">
+    <HomeIntro client:load>
+      <h1 class="heading-serif text-4xl md:text-6xl lg:text-7xl leading-[1.05] max-w-4xl">
+        [À COMPLÉTER PAR NILS — manifeste exact, BRIEF.md section&nbsp;2.]
+      </h1>
+      <p class="mt-8 max-w-2xl text-ink-muted text-lg md:text-xl leading-relaxed">
+        [À COMPLÉTER PAR NILS — sous-titre manifeste, BRIEF.md section&nbsp;2. Photographe à Strasbourg, marques, architecture, portrait éditorial.]
+      </p>
+    </HomeIntro>
+  </section>
+
+  <!-- Sélection portfolio -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="flex items-baseline justify-between mb-10">
+      <h2 class="heading-serif text-2xl md:text-3xl">Sélection</h2>
+      <a href="/work" class="text-sm text-ink-muted hover:text-ink transition-colors">
+        Voir tout →
+      </a>
+    </div>
+
+    <ul class="group/grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+      {
+        projects.map((project) => (
+          <li class="group/card transition-opacity duration-300 group-hover/grid:opacity-60 hover:!opacity-100">
+            <a href={`/work/${project.slug}`} class="block">
+              <div class="aspect-[4/5] bg-border mb-4 overflow-hidden">
+                {/* Placeholder visuel — image hero du projet à venir */}
+                <div class="w-full h-full bg-gradient-to-br from-border to-bg" />
+              </div>
+              <div class="flex items-baseline justify-between">
+                <h3 class="heading-serif text-lg">{project.data.client}</h3>
+                <span class="text-ink-muted text-sm tabular-nums">{project.data.year}</span>
+              </div>
+              <p class="text-ink-muted text-sm mt-1">{project.data.summary}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- Bandeau clients -->
+  <ScrollReveal client:visible as="section" className="container-page py-24 border-t border-border">
+    <p class="text-sm text-ink-muted uppercase tracking-widest mb-8">
+      {t(locale, 'home.clients.title')}
+    </p>
+    <ul class="flex flex-wrap gap-x-12 gap-y-6 heading-serif text-2xl md:text-3xl text-ink-muted">
+      {clients.map((c) => <li>{c}</li>)}
+    </ul>
+  </ScrollReveal>
+
+  <!-- CTA -->
+  <ScrollReveal client:visible as="section" className="container-page py-32 md:py-40 text-center">
+    <h2 class="heading-serif text-4xl md:text-6xl mb-8">{t(locale, 'cta.brief')}</h2>
+    <a
+      href="/contact"
+      class="inline-block border-b border-ink pb-1 hover:text-ink-muted hover:border-ink-muted transition-colors text-lg"
+    >
+      Démarrer un brief
+    </a>
+  </ScrollReveal>
+</BaseLayout>

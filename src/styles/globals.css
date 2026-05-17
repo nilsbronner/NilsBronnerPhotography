@@ -1,0 +1,64 @@
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/inter';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #FAFAF7;
+    --ink: #111111;
+    --ink-muted: #555555;
+    --accent: #D9491E;
+    --border: #E5E5E0;
+  }
+
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: theme('fontFamily.sans');
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100dvh;
+  }
+
+  ::selection {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  /* Focus visible — accessibility */
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Respect prefers-reduced-motion at CSS level too */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply max-w-7xl mx-auto px-6 md:px-8;
+  }
+
+  .heading-serif {
+    @apply font-serif tracking-tight;
+    font-feature-settings: 'ss01', 'ss02';
+  }
+}

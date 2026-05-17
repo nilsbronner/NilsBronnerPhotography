@@ -1,0 +1,78 @@
+---
+import MobileMenu from '@/components/motion/MobileMenu';
+import { t, localizedPath, altLocale, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const navItems = [
+  { href: localizedPath(locale, '/work'), label: t(locale, 'nav.work') },
+  { href: localizedPath(locale, '/about'), label: t(locale, 'nav.about') },
+  { href: localizedPath(locale, '/services'), label: t(locale, 'nav.services') },
+  { href: localizedPath(locale, '/contact'), label: t(locale, 'nav.contact') },
+];
+
+const homeHref = localizedPath(locale, '/');
+const altHref = localizedPath(altLocale(locale), Astro.url.pathname.replace(/^\/en/, '') || '/');
+---
+
+<header
+  id="site-nav"
+  class="sticky top-0 z-40 transition-[background,border-color,backdrop-filter] duration-300 border-b border-transparent"
+>
+  <div class="container-page flex items-center justify-between h-16 md:h-20">
+    <a href={homeHref} class="heading-serif text-lg md:text-xl tracking-tight">
+      Nils Bronner
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8 text-sm">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            class="text-ink hover:text-ink-muted transition-colors duration-200"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        href={altHref}
+        class="text-ink-muted hover:text-ink transition-colors duration-200 tabular-nums"
+        aria-label={`Switch language to ${altLocale(locale).toUpperCase()}`}
+      >
+        {t(locale, 'lang.switch')}
+      </a>
+    </nav>
+
+    <MobileMenu
+      client:idle
+      items={navItems}
+      altHref={altHref}
+      altLabel={t(locale, 'lang.switch')}
+      openLabel={t(locale, 'nav.menu.open')}
+      closeLabel={t(locale, 'nav.menu.close')}
+    />
+  </div>
+</header>
+
+<script>
+  // Léger blur + bordure au scroll. CSS pur, pas de Motion.
+  const nav = document.getElementById('site-nav');
+  if (nav) {
+    const update = () => {
+      if (window.scrollY > 8) {
+        nav.classList.add('bg-bg/80', 'backdrop-blur-md', 'border-border');
+        nav.classList.remove('border-transparent');
+      } else {
+        nav.classList.remove('bg-bg/80', 'backdrop-blur-md', 'border-border');
+        nav.classList.add('border-transparent');
+      }
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  }
+</script>

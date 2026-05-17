@@ -1,0 +1,67 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths = (async () => {
+  const projects = await getCollection('projects');
+  return projects
+    .filter((p) => p.data.locale === 'fr')
+    .map((project) => ({
+      params: { slug: project.slug },
+      props: { project },
+    }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+const { data } = project;
+---
+
+<BaseLayout title={`${data.client} — Nils Bronner`} description={data.summary}>
+  <article>
+    <!-- Hero image — placeholder en attendant les vraies images -->
+    <div class="w-full aspect-[3/2] bg-gradient-to-br from-border to-bg mt-16" />
+
+    <section class="container-page py-16 md:py-24 grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div class="md:col-span-2 max-w-prose">
+        <h1 class="heading-serif text-4xl md:text-5xl mb-6">{data.client}</h1>
+        <p class="text-ink-muted text-lg mb-8">{data.summary}</p>
+        <div class="prose prose-neutral max-w-none">
+          <Content />
+        </div>
+      </div>
+
+      <aside class="md:sticky md:top-28 self-start text-sm space-y-4">
+        <dl class="space-y-3">
+          <div>
+            <dt class="text-ink-muted uppercase tracking-wider text-xs">Client</dt>
+            <dd>{data.client}</dd>
+          </div>
+          <div>
+            <dt class="text-ink-muted uppercase tracking-wider text-xs">Année</dt>
+            <dd class="tabular-nums">{data.year}</dd>
+          </div>
+          <div>
+            <dt class="text-ink-muted uppercase tracking-wider text-xs">Rôle</dt>
+            <dd>{data.role}</dd>
+          </div>
+          {
+            data.deliverables.length > 0 && (
+              <div>
+                <dt class="text-ink-muted uppercase tracking-wider text-xs">Livrables</dt>
+                <dd>
+                  <ul>
+                    {data.deliverables.map((d) => (
+                      <li>{d}</li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+      </aside>
+    </section>
+  </article>
+</BaseLayout>

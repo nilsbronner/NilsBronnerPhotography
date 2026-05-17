@@ -1,0 +1,65 @@
+---
+import { t, localizedPath, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const navItems = [
+  { href: localizedPath(locale, '/work'), label: t(locale, 'nav.work') },
+  { href: localizedPath(locale, '/about'), label: t(locale, 'nav.about') },
+  { href: localizedPath(locale, '/services'), label: t(locale, 'nav.services') },
+  { href: localizedPath(locale, '/contact'), label: t(locale, 'nav.contact') },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-32 border-t border-border">
+  <div class="container-page py-16 grid grid-cols-1 md:grid-cols-3 gap-12 text-sm">
+    <div>
+      <h3 class="heading-serif text-base mb-4">{t(locale, 'footer.contact')}</h3>
+      <ul class="space-y-2 text-ink-muted">
+        <li>
+          <a href="mailto:contact@nilsbronner.com" class="hover:text-ink transition-colors">
+            contact@nilsbronner.com
+          </a>
+        </li>
+        <li>Strasbourg, France</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="heading-serif text-base mb-4">{t(locale, 'footer.nav')}</h3>
+      <ul class="space-y-2">
+        {
+          navItems.map((item) => (
+            <li>
+              <a href={item.href} class="text-ink-muted hover:text-ink transition-colors">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="heading-serif text-base mb-4">© {year}</h3>
+      <ul class="space-y-2 text-ink-muted">
+        <li>{t(locale, 'footer.credit')}</li>
+        <li>
+          <a href={localizedPath(locale, '/legal')} class="hover:text-ink transition-colors">
+            {t(locale, 'footer.legal')}
+          </a>
+          <span class="mx-2">·</span>
+          <a href={localizedPath(locale, '/privacy')} class="hover:text-ink transition-colors">
+            {t(locale, 'footer.rgpd')}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</footer>

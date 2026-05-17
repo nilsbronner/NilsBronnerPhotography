@@ -1,0 +1,78 @@
+---
+import '@/styles/globals.css';
+import Navigation from '@/components/Navigation.astro';
+import Footer from '@/components/Footer.astro';
+import PageTransition from '@/components/motion/PageTransition';
+import { getLocale, altLocale, localizedPath } from '@/lib/i18n';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'Nils Bronner — Photographe à Strasbourg. Campagnes marques, architecture, portrait éditorial.',
+  ogImage = '/og-default.jpg',
+  noindex = false,
+} = Astro.props;
+
+const locale = getLocale(Astro.url.pathname);
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const altPath = localizedPath(altLocale(locale), Astro.url.pathname.replace(/^\/en/, '') || '/');
+const altUrl = new URL(altPath, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={locale} href={canonical} />
+    <link rel="alternate" hreflang={altLocale(locale)} href={altUrl} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site).toString()} />
+
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
+    <meta property="og:locale" content={locale === 'fr' ? 'fr_FR' : 'en_US'} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site).toString()} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="bg-bg text-ink antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-ink focus:text-bg focus:px-3 focus:py-2"
+    >
+      Aller au contenu
+    </a>
+
+    <Navigation locale={locale} />
+
+    <PageTransition client:idle>
+      <main id="main">
+        <slot />
+      </main>
+    </PageTransition>
+
+    <Footer locale={locale} />
+  </body>
+</html>
