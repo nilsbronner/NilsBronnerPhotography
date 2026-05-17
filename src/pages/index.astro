@@ -5,18 +5,16 @@ import HeroParallax from '@/components/motion/HeroParallax';
 import KenBurns from '@/components/motion/KenBurns';
 import ScrollScale from '@/components/motion/ScrollScale';
 import ScrollReveal from '@/components/motion/ScrollReveal';
-import ProjectCard from '@/components/ProjectCard.astro';
+import ProjectListRow from '@/components/ProjectListRow.astro';
 import Cinemascope from '@/components/Cinemascope.astro';
 import TrackingShot from '@/components/TrackingShot.astro';
-import MinimalBreak from '@/components/MinimalBreak.astro';
-import FullBleedImage from '@/components/FullBleedImage.astro';
 import Marquee from '@/components/Marquee.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 
 import homeHero from '@/assets/images/home/home-hero.jpg';
 
-// Tracking shot (panoramique horizontal pinned)
+// Tracking shot images
 import tEvt1 from '@/assets/images/evenementiel/evenementiel-01.jpg';
 import tArchi1 from '@/assets/images/architecture/architecture-01.jpg';
 import tPort1 from '@/assets/images/portrait/portrait-01.jpg';
@@ -26,20 +24,18 @@ import tRep1 from '@/assets/images/reportage/reportage-01.jpg';
 import tArchi2 from '@/assets/images/architecture/architecture-02.jpg';
 import tEvt2 from '@/assets/images/evenementiel/evenementiel-02.jpg';
 
-// Cinemascope sections (2.39:1 letterbox)
 import cineImage1 from '@/assets/images/reportage/reportage-hero.jpg';
 import cineImage2 from '@/assets/images/portrait/portrait-hero.jpg';
-import cineImage3 from '@/assets/images/architecture/architecture-hero.jpg';
 
 const trackingImages = [
-  { src: tEvt1, alt: 'Événementiel', label: 'Événementiel' },
-  { src: tArchi1, alt: 'Architecture', label: 'Architecture' },
-  { src: tPort1, alt: 'Portrait', label: 'Portrait' },
-  { src: tNuance1, alt: 'nuance', label: 'nuance' },
-  { src: tBrand1, alt: 'Brand', label: 'Brand' },
-  { src: tRep1, alt: 'Reportage', label: 'Reportage' },
-  { src: tArchi2, alt: 'Architecture', label: 'Architecture' },
-  { src: tEvt2, alt: 'Événementiel', label: 'Événementiel' },
+  { src: tEvt1, alt: 'Événementiel', label: '[ÉVÉNEMENTIEL]' },
+  { src: tArchi1, alt: 'Architecture', label: '[ARCHITECTURE]' },
+  { src: tPort1, alt: 'Portrait', label: '[PORTRAIT]' },
+  { src: tNuance1, alt: 'nuance', label: '[NUANCE]' },
+  { src: tBrand1, alt: 'Brand', label: '[BRAND]' },
+  { src: tRep1, alt: 'Reportage', label: '[REPORTAGE]' },
+  { src: tArchi2, alt: 'Architecture', label: '[ARCHITECTURE]' },
+  { src: tEvt2, alt: 'Événementiel', label: '[ÉVÉNEMENTIEL]' },
 ];
 
 const projects = (await getCollection('projects'))
@@ -57,15 +53,6 @@ const clients = [
   'OPUS 67',
   'EIMI',
   'nuance',
-];
-
-const aspects = [
-  'aspect-[4/5]',
-  'aspect-[3/2]',
-  'aspect-[3/4]',
-  'aspect-[16/11]',
-  'aspect-[4/5]',
-  'aspect-[5/7]',
 ];
 ---
 
@@ -90,10 +77,10 @@ const aspects = [
   />
 
   <!-- ════════════════════════════════════════════════════════════════
-       § OUVERTURE — Hero 100vh, Ken Burns + parallax + HUD cinéma
+       [01] OUVERTURE — hero structurel, all-caps stacked sans-serif
        ════════════════════════════════════════════════════════════════ -->
   <section
-    class="relative h-[100svh] min-h-[680px] -mt-16 md:-mt-20 overflow-hidden bg-surface"
+    class="relative h-[100svh] min-h-[720px] -mt-16 md:-mt-20 overflow-hidden bg-bg"
   >
     <HeroParallax client:load intensity={60} className="absolute inset-0 w-full h-[110%]">
       <KenBurns client:load duration={40} className="w-full h-full">
@@ -109,101 +96,99 @@ const aspects = [
       </KenBurns>
     </HeroParallax>
 
-    <!-- Letterbox bands cinéma (subtils, top + bottom 4-6vh) -->
-    <div class="absolute top-0 left-0 right-0 h-[5vh] bg-bg pointer-events-none z-10"></div>
-    <div class="absolute bottom-0 left-0 right-0 h-[5vh] bg-bg pointer-events-none z-10"></div>
+    <!-- Overlay sombre pour contraste texte -->
+    <div class="absolute inset-0 bg-gradient-to-b from-bg/40 via-bg/20 to-bg pointer-events-none" />
 
-    <!-- Overlay dégradé pour lisibilité texte -->
-    <div class="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-bg/10 pointer-events-none" />
-
-    <!-- Grain pellicule -->
+    <!-- Grain -->
     <div
-      class="absolute inset-0 opacity-[0.07] mix-blend-overlay pointer-events-none"
+      class="absolute inset-0 opacity-[0.08] mix-blend-overlay pointer-events-none"
       style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22160%22><filter id=%22n%22><feTurbulence baseFrequency=%221.1%22 numOctaves=%222%22 stitchTiles=%22stitch%22/></filter><rect width=%22160%22 height=%22160%22 filter=%22url(%23n)%22/></svg>');"
     >
     </div>
 
-    <!-- HUD cinéma top : scène + cordonnées + timecode -->
-    <div class="absolute top-[8vh] left-0 right-0 container-page flex justify-between text-ink/70 text-[10px] uppercase tracking-[0.3em] font-sans z-20">
-      <span>Sc. 01 · Ouverture</span>
-      <span class="hidden md:inline tabular-nums">Strasbourg N48.58° E7.75°</span>
-      <span class="tabular-nums">00:00 / 06:50</span>
+    <!-- HUD top : labels mono en brackets -->
+    <div class="absolute top-[8vh] left-0 right-0 container-page flex justify-between text-ink/60 label-mono z-20">
+      <span>[SC. 01 · OUVERTURE]</span>
+      <span class="hidden md:inline">[STRASBOURG · N48.58° E7.75°]</span>
+      <span class="tabular-nums">[00:00 / 06:50]</span>
     </div>
 
-    <!-- Titre ancré au tiers inférieur (composition cinéma) -->
+    <!-- TITRE : massive all-caps stacked sans-serif Janis Sne-style -->
     <div class="absolute inset-0 flex items-end pointer-events-none z-20">
       <HomeIntro client:load>
-        <div class="container-page pb-[12vh] relative pointer-events-auto">
-          <p class="text-ink/60 text-[10px] uppercase tracking-[0.3em] mb-6 md:mb-8">
-            — Photographe · Marques, Agences, Institutions
+        <div class="container-page pb-[10vh] relative pointer-events-auto">
+          <p class="text-ink/60 label-mono mb-8">
+            [PHOTOGRAPHE — MARQUES · AGENCES · INSTITUTIONS]
           </p>
           <h1
-            class="font-serif text-ink leading-[0.92] tracking-[-0.025em] max-w-[14ch]"
-            style="font-size:clamp(3rem, 11vw, 11rem);"
+            class="heading-display text-ink"
+            style="font-size:clamp(3.5rem, 14vw, 14rem);"
           >
-            L’image <span class="italic font-light">qui restera.</span>
+            <span class="block">L’IMAGE</span>
+            <span class="block">QUI</span>
+            <span class="block">RESTERA<span class="text-ink/40">.</span></span>
           </h1>
-          <div class="mt-10 md:mt-14 flex flex-wrap gap-x-12 gap-y-4 items-baseline text-ink/70 text-[10px] uppercase tracking-[0.3em] font-sans">
-            <span>— Précis</span>
-            <span>— Narratif</span>
-            <span>— Tenu</span>
+          <div class="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-ink/70 label-mono">
+            <span>[PRÉCIS]</span>
+            <span>[NARRATIF]</span>
+            <span>[TENU]</span>
           </div>
         </div>
       </HomeIntro>
     </div>
 
-    <!-- Scrub bar bas, ambient cinéma -->
+    <!-- Scrub bar bas -->
     <div class="absolute bottom-[6vh] left-0 right-0 container-page pointer-events-none z-20">
-      <div class="flex items-center gap-4 text-ink/50 text-[10px] uppercase tracking-[0.3em] font-sans">
-        <span class="tabular-nums">01</span>
+      <div class="flex items-center gap-4 text-ink/50 label-mono">
+        <span class="tabular-nums">[SCROLL]</span>
         <span class="flex-1 h-px bg-ink/20 relative">
           <span class="absolute left-0 top-0 h-px w-[14%] bg-ink/70"></span>
         </span>
-        <span class="tabular-nums">06</span>
+        <span class="tabular-nums">10/10</span>
       </div>
     </div>
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       § 01 — MINIMAL BREAK : souffle après l'ouverture
+       [02] POSTURE — texte structurel massif
        ════════════════════════════════════════════════════════════════ -->
-  <MinimalBreak
-    eyebrow="Sc. 02 / Posture"
-    text="Je crois aux images"
-    italic="qui tiennent."
-    height="medium"
-  />
+  <section class="py-32 md:py-48">
+    <div class="container-page">
+      <p class="label-mono text-ink-muted mb-10">[SC. 02 / POSTURE]</p>
+      <h2
+        class="heading-display text-ink leading-[0.85] tracking-[-0.04em] max-w-[18ch]"
+        style="font-size:clamp(2.5rem, 8vw, 8rem);"
+      >
+        Je crois aux images qui tiennent<span class="text-ink/40">.</span>
+      </h2>
+    </div>
+  </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       § 02 — CINEMASCOPE : letterbox 2.39:1 + Ken Burns + timecode
+       [03] PLAN LARGE — Cinemascope 2.39:1
        ════════════════════════════════════════════════════════════════ -->
   <ScrollScale client:visible>
     <Cinemascope
       src={cineImage1}
-      alt="Lecture composée du réel"
-      scene="Sc. 03 · Plan large"
-      timecode="01:23 / 06:50"
-      title="Construire l’image"
-      italic="qui restera."
+      alt="Plan large"
+      scene="[SC. 03 · PLAN LARGE]"
+      timecode="[01:23 / 06:50]"
+      title="Construire l'image qui restera"
     />
   </ScrollScale>
 
   <!-- ════════════════════════════════════════════════════════════════
-       § 03 — MANIFESTE éditorial, 2 colonnes
+       [04] MANIFESTE — éditorial 2 col
        ════════════════════════════════════════════════════════════════ -->
-  <section class="container-page py-28 md:py-40">
-    <ScrollReveal client:visible>
-      <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-12">
-        — Sc. 04 / Manifeste
-      </p>
-    </ScrollReveal>
+  <section class="container-page py-32 md:py-40">
+    <p class="label-mono text-ink-muted mb-12">[SC. 04 / MANIFESTE]</p>
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
       <ScrollReveal client:visible as="div" className="md:col-span-7">
         <h2
-          class="heading-serif leading-[0.98] tracking-[-0.02em]"
-          style="font-size:clamp(2.25rem, 5.5vw, 5rem);"
+          class="heading-display text-ink leading-[0.9] tracking-[-0.04em]"
+          style="font-size:clamp(2rem, 6vw, 5.5rem);"
         >
-          Produire moins, <span class="italic font-light">produire ce qui restera.</span>
+          Produire moins, produire ce qui restera<span class="text-ink/40">.</span>
         </h2>
       </ScrollReveal>
       <ScrollReveal client:visible as="div" className="md:col-span-5 md:col-start-8 space-y-5 text-ink-muted leading-relaxed text-lg max-w-prose">
@@ -213,8 +198,8 @@ const aspects = [
           exigence.
         </p>
         <p class="pt-2">
-          <a href="/about" class="text-ink border-b border-ink/30 hover:border-ink pb-0.5 transition-colors">
-            Lire le manifeste complet →
+          <a href="/about" class="label-mono text-ink hover:opacity-70 transition-opacity inline-flex items-center gap-2">
+            [LIRE LE MANIFESTE COMPLET →]
           </a>
         </p>
       </ScrollReveal>
@@ -222,135 +207,98 @@ const aspects = [
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       § 04 — TRACKING SHOT : section pinned, panoramique horizontal
+       [05] TRAVELLING — tracking shot pinned, panoramique
        ════════════════════════════════════════════════════════════════ -->
   <TrackingShot
-    chapter="Sc. 05 / Travelling"
+    chapter="[SC. 05 / TRAVELLING]"
     title="Huit plans, une écriture."
     images={trackingImages}
   />
 
   <!-- ════════════════════════════════════════════════════════════════
-       § 05 — MINIMAL : préparation portfolio
+       [06] INDEX — projets en stack numéroté Janis Sne-style
        ════════════════════════════════════════════════════════════════ -->
-  <MinimalBreak
-    eyebrow="Sc. 06 / Sélection"
-    text="Six univers,"
-    italic="un regard."
-    height="short"
-  />
-
-  <!-- ════════════════════════════════════════════════════════════════
-       § 06 — PORTFOLIO asymétrique 12-col
-       ════════════════════════════════════════════════════════════════ -->
-  <section class="container-page pb-28 md:pb-40">
-    <ul class="grid grid-cols-1 md:grid-cols-12 gap-x-6 md:gap-x-8 gap-y-20 md:gap-y-40">
-      {
-        projects.map((project, i) => {
-          const layouts = [
-            'md:col-span-7',
-            'md:col-span-5 md:mt-40',
-            'md:col-span-5',
-            'md:col-span-7 md:mt-40',
-            'md:col-span-6',
-            'md:col-span-6 md:mt-40',
-          ];
-          return (
-            <li class={layouts[i] ?? 'md:col-span-6'}>
-              <ProjectCard
-                slug={project.slug}
-                client={project.data.client}
-                year={project.data.year}
-                summary={project.data.summary}
-                tags={project.data.tags}
-                aspect={aspects[i] ?? 'aspect-[4/5]'}
-                thumbnail={project.data.thumbnail}
-                index={i}
-              />
-            </li>
-          );
-        })
-      }
-    </ul>
-
-    <div class="mt-24 text-center">
-      <a href="/work" class="inline-block text-lg border-b border-ink/40 pb-1 hover:border-ink transition-colors">
-        Voir toute la sélection →
+  <section class="container-page py-32 md:py-48">
+    <div class="flex items-end justify-between mb-16 md:mb-24">
+      <div>
+        <p class="label-mono text-ink-muted mb-6">[SC. 06 / INDEX]</p>
+        <h2
+          class="heading-display text-ink leading-[0.85] tracking-[-0.04em]"
+          style="font-size:clamp(2.5rem, 8vw, 7rem);"
+        >
+          Six univers,<br />une écriture<span class="text-ink/40">.</span>
+        </h2>
+      </div>
+      <a href="/work" class="hidden md:inline-flex label-mono items-center gap-2 hover:opacity-70 transition-opacity">
+        [VOIR TOUT →]
       </a>
     </div>
+
+    <ul class="border-b border-border">
+      {
+        projects.map((project, i) => (
+          <li>
+            <ProjectListRow
+              index={i}
+              slug={project.slug}
+              client={project.data.client}
+              year={project.data.year}
+              summary={project.data.summary}
+              tags={project.data.tags}
+              thumbnail={project.data.thumbnail}
+            />
+          </li>
+        ))
+      }
+    </ul>
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       § 07 — CINEMASCOPE 2 : plan de fermeture
+       [07] PLAN RAPPROCHÉ — Cinemascope 2
        ════════════════════════════════════════════════════════════════ -->
   <ScrollScale client:visible>
     <Cinemascope
       src={cineImage2}
-      alt="Portrait éditorial"
-      scene="Sc. 07 · Plan rapproché"
-      timecode="04:35 / 06:50"
-      title="Le regard cadre, hiérarchise,"
-      italic="tient la scène."
+      alt="Plan rapproché"
+      scene="[SC. 07 · PLAN RAPPROCHÉ]"
+      timecode="[04:35 / 06:50]"
+      title="Le regard cadre, hiérarchise, tient la scène"
     />
   </ScrollScale>
 
   <!-- ════════════════════════════════════════════════════════════════
-       § 08 — MARQUEE CLIENTS
+       [08] CASTING — marquee clients
        ════════════════════════════════════════════════════════════════ -->
   <section class="py-20 md:py-28 border-y border-border">
     <div class="container-page mb-10">
-      <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted">
-        — Sc. 08 / Casting
-      </p>
+      <p class="label-mono text-ink-muted">[SC. 08 / CASTING]</p>
     </div>
     <Marquee items={clients} duration={70} />
   </section>
 
   <!-- ════════════════════════════════════════════════════════════════
-       § 09 — CINEMASCOPE 3 : ultime plan avant le générique
-       ════════════════════════════════════════════════════════════════ -->
-  <ScrollScale client:visible>
-    <Cinemascope
-      src={cineImage3}
-      alt="Architecture"
-      scene="Sc. 09 · Dernière scène"
-      timecode="06:15 / 06:50"
-      kenBurns={false}
-    />
-  </ScrollScale>
-
-  <!-- ════════════════════════════════════════════════════════════════
-       § 10 — GÉNÉRIQUE : CTA final
+       [09] GÉNÉRIQUE — CTA final
        ════════════════════════════════════════════════════════════════ -->
   <section class="container-page py-32 md:py-48">
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-      <ScrollReveal client:visible as="div" className="md:col-span-2">
-        <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted">
-          — Générique
-        </p>
-      </ScrollReveal>
-      <ScrollReveal client:visible as="div" className="md:col-span-10">
-        <h2
-          class="heading-serif leading-[0.95] tracking-[-0.02em] max-w-[20ch]"
-          style="font-size:clamp(2.5rem, 8vw, 7rem);"
+    <p class="label-mono text-ink-muted mb-12">[GÉNÉRIQUE]</p>
+    <ScrollReveal client:visible>
+      <h2
+        class="heading-display text-ink leading-[0.85] tracking-[-0.04em] max-w-[20ch]"
+        style="font-size:clamp(2.5rem, 10vw, 9rem);"
+      >
+        Un projet&nbsp;? Parlons-en<span class="text-ink/40">.</span>
+      </h2>
+      <div class="mt-12 flex flex-wrap gap-x-6 gap-y-4 label-mono">
+        <a href="/contact" class="inline-flex items-center gap-2 hover:opacity-70 transition-opacity">
+          [DÉMARRER UN BRIEF →]
+        </a>
+        <a
+          href="mailto:contact@nilsbronner.com"
+          class="inline-flex items-center gap-2 text-ink-muted hover:text-ink transition-colors"
         >
-          Un projet&nbsp;? <span class="italic font-light">Parlons-en.</span>
-        </h2>
-        <div class="mt-12 flex flex-wrap gap-x-12 gap-y-6">
-          <a
-            href="/contact"
-            class="inline-block text-lg border-b border-ink/40 pb-1 hover:border-ink transition-colors"
-          >
-            Démarrer un brief →
-          </a>
-          <a
-            href="mailto:contact@nilsbronner.com"
-            class="inline-block text-lg text-ink-muted hover:text-ink transition-colors"
-          >
-            contact@nilsbronner.com
-          </a>
-        </div>
-      </ScrollReveal>
-    </div>
+          [CONTACT@NILSBRONNER.COM]
+        </a>
+      </div>
+    </ScrollReveal>
   </section>
 </BaseLayout>

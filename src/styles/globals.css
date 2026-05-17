@@ -1,5 +1,6 @@
 @import '@fontsource-variable/fraunces';
 @import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
 
 @tailwind base;
 @tailwind components;
@@ -62,5 +63,23 @@
   .heading-serif {
     @apply font-serif tracking-tight;
     font-feature-settings: 'ss01', 'ss02';
+  }
+
+  /* Structural display sans — pour les moments massifs all-caps stack */
+  .heading-display {
+    @apply font-sans;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.85;
+    text-transform: uppercase;
+  }
+
+  /* Mono labels — HUD, timecodes, brackets */
+  .label-mono {
+    font-family: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.6875rem; /* 11px */
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
   }
 }

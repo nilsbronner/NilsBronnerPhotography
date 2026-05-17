@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  index: number;
+  slug: string;
+  client: string;
+  year: number;
+  summary: string;
+  tags: string[];
+  thumbnail?: ImageMetadata;
+}
+
+const { index, slug, client, year, summary, tags, thumbnail } = Astro.props;
+const num = `F.${String(index + 1).padStart(2, '0')}`;
+---
+
+<a href={`/work/${slug}`} class="row group block relative" data-cursor="VIEW">
+  <div
+    class="row__grid grid grid-cols-12 gap-4 items-baseline py-8 md:py-12 border-t border-border transition-colors duration-500 group-hover:border-ink/50"
+  >
+    <div class="col-span-2 md:col-span-1 label-mono text-ink-muted tabular-nums">
+      {num}
+    </div>
+
+    <div class="col-span-10 md:col-span-5">
+      <h3
+        class="heading-display text-ink leading-[0.85] tracking-[-0.04em]"
+        style="font-size:clamp(1.75rem, 5vw, 4rem);"
+      >
+        {client}
+      </h3>
+    </div>
+
+    <div class="hidden md:block md:col-span-4 label-mono text-ink-muted">
+      <ul class="flex flex-wrap gap-x-3 gap-y-1">
+        {tags.slice(0, 3).map((tag) => <li>[{tag}]</li>)}
+      </ul>
+    </div>
+
+    <div class="col-span-12 md:col-span-2 label-mono text-ink-muted text-right tabular-nums">
+      <span class="inline-flex items-center gap-2">
+        {year}
+        <span class="hidden md:inline transition-transform duration-500 group-hover:translate-x-1">
+          [↗]
+        </span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Summary, visible mobile, hidden desktop (révélation au hover via image) -->
+  <p class="md:hidden text-ink-muted text-sm pb-6 max-w-prose">
+    {summary}
+  </p>
+
+  <!-- Image preview en absolute, révélée au hover desktop -->
+  {
+    thumbnail && (
+      <figure class="row__preview hidden md:block absolute right-0 top-1/2 -translate-y-1/2 aspect-[4/5] w-[28%] max-w-[420px] pointer-events-none overflow-hidden bg-surface opacity-0 translate-x-4 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-hover:translate-x-0 z-20">
+        <Image
+          src={thumbnail}
+          alt={`${client} — aperçu`}
+          widths={[480, 720, 1000]}
+          sizes="30vw"
+          quality={82}
+          loading="lazy"
+          decoding="async"
+          class="w-full h-full object-cover"
+        />
+      </figure>
+    )
+  }
+</a>

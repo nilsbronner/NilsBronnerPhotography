@@ -6,6 +6,7 @@ export default {
       fontFamily: {
         serif: ['"Fraunces Variable"', 'Fraunces', 'serif'],
         sans: ['"Inter Variable"', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono Variable"', '"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
         bg: 'var(--bg)',
