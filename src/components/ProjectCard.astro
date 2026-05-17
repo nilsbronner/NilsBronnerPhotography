@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import { gradientFor } from '@/lib/gradients';
+import type { ImageMetadata } from 'astro';
 
 interface Props {
   slug: string;
@@ -7,10 +9,8 @@ interface Props {
   year: number;
   summary: string;
   tags: string[];
-  /** Ratio Tailwind : 'aspect-[4/5]' (portrait), 'aspect-[3/2]' (paysage), 'aspect-square' */
   aspect?: string;
-  /** Taille relative dans la grille — 'feature' = card hero plus grande */
-  scale?: 'default' | 'feature';
+  thumbnail?: ImageMetadata;
 }
 
 const {
@@ -20,35 +20,43 @@ const {
   summary,
   tags,
   aspect = 'aspect-[4/5]',
-  scale = 'default',
+  thumbnail,
 } = Astro.props;
 
 const grad = gradientFor(slug);
-const indexLabel = String(scale === 'feature' ? 1 : 0).padStart(2, '0');
 ---
 
-<a
-  href={`/work/${slug}`}
-  class="group block"
-  data-cursor="VIEW"
->
+<a href={`/work/${slug}`} class="group block" data-cursor="VIEW">
   <div
     class={`relative overflow-hidden ${aspect} bg-border`}
-    style={`background:${grad.background};filter:${grad.filter};`}
+    style={thumbnail ? undefined : `background:${grad.background};filter:${grad.filter};`}
   >
-    <!-- Watermark numéral discret, signature éditoriale -->
+    {
+      thumbnail && (
+        <Image
+          src={thumbnail}
+          alt={`${client} — projet de Nils Bronner`}
+          widths={[480, 800, 1200, 1600]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          class="absolute inset-0 w-full h-full object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+          loading="lazy"
+          decoding="async"
+          quality={82}
+        />
+      )
+    }
+
     <span
-      class="absolute top-4 left-4 text-bg/40 text-xs tracking-[0.25em] uppercase font-sans"
+      class="absolute top-4 left-4 text-bg/70 text-xs tracking-[0.25em] uppercase font-sans drop-shadow"
     >
       — Projet
     </span>
     <span
-      class="absolute bottom-4 right-4 text-bg/40 text-xs tracking-[0.25em] uppercase font-sans tabular-nums"
+      class="absolute bottom-4 right-4 text-bg/70 text-xs tracking-[0.25em] uppercase font-sans tabular-nums drop-shadow"
     >
       {year}
     </span>
 
-    <!-- Overlay au hover, subtil -->
     <div
       class="absolute inset-0 bg-ink/0 group-hover:bg-ink/10 transition-colors duration-500"
     >
@@ -59,9 +67,7 @@ const indexLabel = String(scale === 'feature' ? 1 : 0).padStart(2, '0');
     <h3 class="heading-serif text-xl md:text-2xl tracking-tight">
       {client}
     </h3>
-    <span class="text-ink-muted text-sm tabular-nums shrink-0 ml-4">
-      ↗
-    </span>
+    <span class="text-ink-muted text-sm tabular-nums shrink-0 ml-4">↗</span>
   </div>
 
   <p class="text-ink-muted text-sm mt-1 max-w-md leading-relaxed">{summary}</p>
