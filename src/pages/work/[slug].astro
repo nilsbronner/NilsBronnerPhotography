@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { gradientFor } from '@/lib/gradients';
 import type { GetStaticPaths } from 'astro';
 
 export const getStaticPaths = (async () => {
@@ -15,43 +16,65 @@ export const getStaticPaths = (async () => {
 
 const { project } = Astro.props;
 const { Content } = await project.render();
-const { data } = project;
+const { data, slug } = project;
+
+const all = (await getCollection('projects'))
+  .filter((p) => p.data.locale === 'fr')
+  .sort((a, b) => a.data.order - b.data.order);
+const idx = all.findIndex((p) => p.slug === slug);
+const prev = idx > 0 ? all[idx - 1] : all[all.length - 1];
+const next = idx < all.length - 1 ? all[idx + 1] : all[0];
+
+const grad = gradientFor(slug);
 ---
 
-<BaseLayout title={`${data.client} — Nils Bronner`} description={data.summary}>
+<BaseLayout title={`${data.client} — Nils Bronner`} description={data.summary} darkHero>
   <article>
-    <!-- Hero image — placeholder en attendant les vraies images -->
-    <div class="w-full aspect-[3/2] bg-gradient-to-br from-border to-bg mt-16" />
-
-    <section class="container-page py-16 md:py-24 grid grid-cols-1 md:grid-cols-3 gap-12">
-      <div class="md:col-span-2 max-w-prose">
-        <h1 class="heading-serif text-4xl md:text-5xl mb-6">{data.client}</h1>
-        <p class="text-ink-muted text-lg mb-8">{data.summary}</p>
-        <div class="prose prose-neutral max-w-none">
-          <Content />
-        </div>
+    <!-- Hero plein écran — placeholder gradient en attendant les vraies images -->
+    <section
+      class="relative h-[88vh] min-h-[600px] -mt-16 md:-mt-20 flex items-end"
+      style={`background:${grad.background};filter:${grad.filter};`}
+    >
+      <div class="absolute top-24 md:top-28 left-0 right-0 container-page flex justify-between text-bg/60 text-[11px] uppercase tracking-[0.25em] font-sans">
+        <span>{data.role}</span>
+        <span class="tabular-nums">{data.year}</span>
       </div>
 
-      <aside class="md:sticky md:top-28 self-start text-sm space-y-4">
-        <dl class="space-y-3">
+      <div class="container-page pb-16 md:pb-20">
+        <p class="text-bg/60 text-[11px] uppercase tracking-[0.3em] mb-6">
+          — Case study
+        </p>
+        <h1
+          class="font-serif text-bg leading-[0.95] tracking-[-0.02em] max-w-[14ch]"
+          style="font-size:clamp(2.5rem, 8vw, 7rem);"
+        >
+          {data.client}
+        </h1>
+      </div>
+    </section>
+
+    <!-- Texte + métadonnées -->
+    <section class="container-page py-24 md:py-40 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
+      <aside class="md:col-span-3 md:sticky md:top-28 self-start text-sm space-y-6">
+        <dl class="space-y-4">
           <div>
-            <dt class="text-ink-muted uppercase tracking-wider text-xs">Client</dt>
-            <dd>{data.client}</dd>
+            <dt class="text-[10px] uppercase tracking-[0.25em] text-ink-muted">Client</dt>
+            <dd class="heading-serif text-lg mt-1">{data.client}</dd>
           </div>
           <div>
-            <dt class="text-ink-muted uppercase tracking-wider text-xs">Année</dt>
-            <dd class="tabular-nums">{data.year}</dd>
+            <dt class="text-[10px] uppercase tracking-[0.25em] text-ink-muted">Année</dt>
+            <dd class="tabular-nums mt-1">{data.year}</dd>
           </div>
           <div>
-            <dt class="text-ink-muted uppercase tracking-wider text-xs">Rôle</dt>
-            <dd>{data.role}</dd>
+            <dt class="text-[10px] uppercase tracking-[0.25em] text-ink-muted">Rôle</dt>
+            <dd class="mt-1">{data.role}</dd>
           </div>
           {
             data.deliverables.length > 0 && (
               <div>
-                <dt class="text-ink-muted uppercase tracking-wider text-xs">Livrables</dt>
-                <dd>
-                  <ul>
+                <dt class="text-[10px] uppercase tracking-[0.25em] text-ink-muted">Livrables</dt>
+                <dd class="mt-1">
+                  <ul class="space-y-1">
                     {data.deliverables.map((d) => (
                       <li>{d}</li>
                     ))}
@@ -62,6 +85,35 @@ const { data } = project;
           }
         </dl>
       </aside>
+
+      <div class="md:col-span-8 md:col-start-5 max-w-prose">
+        <p class="heading-serif text-2xl md:text-3xl leading-tight mb-10 text-ink">
+          {data.summary}
+        </p>
+        <div class="prose prose-neutral max-w-none text-lg leading-relaxed text-ink-muted">
+          <Content />
+        </div>
+      </div>
     </section>
+
+    <!-- Navigation projet précédent / suivant -->
+    <nav class="container-page py-24 md:py-32 border-t border-border grid grid-cols-2 gap-8">
+      <a href={`/work/${prev.slug}`} class="group">
+        <p class="text-[10px] uppercase tracking-[0.25em] text-ink-muted mb-2">
+          ← Précédent
+        </p>
+        <p class="heading-serif text-2xl md:text-3xl group-hover:text-ink-muted transition-colors">
+          {prev.data.client}
+        </p>
+      </a>
+      <a href={`/work/${next.slug}`} class="group text-right">
+        <p class="text-[10px] uppercase tracking-[0.25em] text-ink-muted mb-2">
+          Suivant →
+        </p>
+        <p class="heading-serif text-2xl md:text-3xl group-hover:text-ink-muted transition-colors">
+          {next.data.client}
+        </p>
+      </a>
+    </nav>
   </article>
 </BaseLayout>

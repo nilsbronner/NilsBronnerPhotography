@@ -1,0 +1,72 @@
+---
+import { gradientFor } from '@/lib/gradients';
+
+interface Props {
+  slug: string;
+  client: string;
+  year: number;
+  summary: string;
+  tags: string[];
+  /** Ratio Tailwind : 'aspect-[4/5]' (portrait), 'aspect-[3/2]' (paysage), 'aspect-square' */
+  aspect?: string;
+  /** Taille relative dans la grille — 'feature' = card hero plus grande */
+  scale?: 'default' | 'feature';
+}
+
+const {
+  slug,
+  client,
+  year,
+  summary,
+  tags,
+  aspect = 'aspect-[4/5]',
+  scale = 'default',
+} = Astro.props;
+
+const grad = gradientFor(slug);
+const indexLabel = String(scale === 'feature' ? 1 : 0).padStart(2, '0');
+---
+
+<a
+  href={`/work/${slug}`}
+  class="group block"
+  data-cursor="VIEW"
+>
+  <div
+    class={`relative overflow-hidden ${aspect} bg-border`}
+    style={`background:${grad.background};filter:${grad.filter};`}
+  >
+    <!-- Watermark numéral discret, signature éditoriale -->
+    <span
+      class="absolute top-4 left-4 text-bg/40 text-xs tracking-[0.25em] uppercase font-sans"
+    >
+      — Projet
+    </span>
+    <span
+      class="absolute bottom-4 right-4 text-bg/40 text-xs tracking-[0.25em] uppercase font-sans tabular-nums"
+    >
+      {year}
+    </span>
+
+    <!-- Overlay au hover, subtil -->
+    <div
+      class="absolute inset-0 bg-ink/0 group-hover:bg-ink/10 transition-colors duration-500"
+    >
+    </div>
+  </div>
+
+  <div class="mt-5 flex items-baseline justify-between">
+    <h3 class="heading-serif text-xl md:text-2xl tracking-tight">
+      {client}
+    </h3>
+    <span class="text-ink-muted text-sm tabular-nums shrink-0 ml-4">
+      ↗
+    </span>
+  </div>
+
+  <p class="text-ink-muted text-sm mt-1 max-w-md leading-relaxed">{summary}</p>
+
+  <ul class="flex flex-wrap gap-x-3 mt-3 text-[10px] uppercase tracking-[0.18em] text-ink-muted">
+    {tags.map((tag) => <li>{tag}</li>)}
+  </ul>
+</a>

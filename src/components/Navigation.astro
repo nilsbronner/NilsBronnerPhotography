@@ -16,39 +16,40 @@ const navItems = [
 ];
 
 const homeHref = localizedPath(locale, '/');
-// Switch FR/EN activé en Sprint 3 (quand les pages EN existeront).
-const showLangSwitch = false;
 ---
 
 <header
   id="site-nav"
-  class="sticky top-0 z-40 transition-[background,border-color,backdrop-filter] duration-300 border-b border-transparent"
+  class="fixed top-0 left-0 right-0 z-40 transition-[background,border-color,backdrop-filter,color] duration-500 border-b border-transparent"
+  data-nav-state="top"
 >
   <div class="container-page flex items-center justify-between h-16 md:h-20">
-    <a href={homeHref} class="heading-serif text-lg md:text-xl tracking-tight">
-      Nils Bronner
+    <a
+      href={homeHref}
+      class="flex items-baseline gap-2 group"
+      aria-label="Accueil"
+    >
+      <span class="heading-serif text-lg md:text-xl tracking-tight">
+        Nils Bronner
+      </span>
+      <span class="hidden sm:inline text-[10px] uppercase tracking-[0.25em] opacity-60">
+        — Photographe
+      </span>
     </a>
 
-    <nav class="hidden md:flex items-center gap-8 text-sm">
+    <nav class="hidden md:flex items-center gap-10 text-sm">
       {
-        navItems.map((item) => (
+        navItems.map((item, i) => (
           <a
             href={item.href}
-            class="text-ink hover:text-ink-muted transition-colors duration-200"
+            class="relative hover:opacity-60 transition-opacity duration-300"
           >
+            <span class="text-[10px] tabular-nums opacity-40 mr-1.5">
+              0{i + 1}
+            </span>
             {item.label}
           </a>
         ))
-      }
-      {
-        showLangSwitch && (
-          <a
-            href="/"
-            class="text-ink-muted hover:text-ink transition-colors duration-200 tabular-nums"
-          >
-            {t(locale, 'lang.switch')}
-          </a>
-        )
       }
     </nav>
 
@@ -62,17 +63,37 @@ const showLangSwitch = false;
 </header>
 
 <script>
-  // Léger blur + bordure au scroll. CSS pur, pas de Motion.
+  // Toggle texte clair (top, sur hero sombre) → texte foncé (scrolled, sur bg clair).
+  // Évite Motion, c'est du chrome — Tailwind + CSS pur suffit.
   const nav = document.getElementById('site-nav');
+  const darkHero = document.body.dataset.darkHero === 'true';
   if (nav) {
-    const update = () => {
-      if (window.scrollY > 8) {
-        nav.classList.add('bg-bg/80', 'backdrop-blur-md', 'border-border');
-        nav.classList.remove('border-transparent');
+    const setTop = () => {
+      if (darkHero) {
+        nav.classList.add('text-bg');
+        nav.classList.remove('text-ink');
       } else {
-        nav.classList.remove('bg-bg/80', 'backdrop-blur-md', 'border-border');
-        nav.classList.add('border-transparent');
+        nav.classList.add('text-ink');
+        nav.classList.remove('text-bg');
       }
+      nav.classList.remove('bg-bg/90', 'backdrop-blur-md', 'border-border');
+      nav.classList.add('border-transparent');
+      nav.dataset.navState = 'top';
+    };
+    const setScrolled = () => {
+      nav.classList.remove('text-bg');
+      nav.classList.add(
+        'text-ink',
+        'bg-bg/90',
+        'backdrop-blur-md',
+        'border-border',
+      );
+      nav.classList.remove('border-transparent');
+      nav.dataset.navState = 'scrolled';
+    };
+    const update = () => {
+      if (window.scrollY > 80) setScrolled();
+      else setTop();
     };
     update();
     window.addEventListener('scroll', update, { passive: true });

@@ -1,41 +1,69 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 
 const projects = (await getCollection('projects'))
   .filter((p) => p.data.locale === 'fr')
   .sort((a, b) => a.data.order - b.data.order);
+
+const aspects = [
+  'aspect-[4/5]',
+  'aspect-[3/2]',
+  'aspect-[3/4]',
+  'aspect-[16/11]',
+  'aspect-[4/5]',
+  'aspect-[5/7]',
+  'aspect-[3/2]',
+  'aspect-[4/5]',
+];
+
+const layouts = [
+  'md:col-span-7',
+  'md:col-span-5 md:mt-40',
+  'md:col-span-5',
+  'md:col-span-7 md:mt-40',
+  'md:col-span-6',
+  'md:col-span-6 md:mt-40',
+  'md:col-span-7',
+  'md:col-span-5 md:mt-40',
+];
 ---
 
-<BaseLayout title="Work — Nils Bronner" description="Sélection de projets : campagnes, architecture, éditorial.">
-  <section class="container-page pt-24 md:pt-36 pb-12">
-    <h1 class="heading-serif text-4xl md:text-6xl">Work</h1>
-    <p class="mt-4 text-ink-muted max-w-2xl">
-      [À COMPLÉTER PAR NILS — intro Work, BRIEF.md.]
+<BaseLayout
+  title="Work — Nils Bronner"
+  description="Portfolio complet — architecture, événementiel, brand, portrait, reportage, nuance."
+>
+  <section class="container-page pt-32 md:pt-48 pb-16">
+    <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-6">
+      — Portfolio · Sélection 2023 – 2025
+    </p>
+    <h1
+      class="heading-serif leading-[0.95] tracking-[-0.02em] max-w-[18ch]"
+      style="font-size:clamp(3rem, 9vw, 8rem);"
+    >
+      Le travail, <span class="italic font-light">par univers.</span>
+    </h1>
+    <p class="mt-10 text-ink-muted text-lg max-w-prose leading-relaxed">
+      Six terrains où je reviens régulièrement. Chaque univers se nourrit des
+      autres — le portrait infuse le reportage, l’architecture cadre
+      l’événementiel.
     </p>
   </section>
 
-  <!-- Toggle + grille filtrable arrivent au Sprint 2 -->
-  <section class="container-page pb-32">
-    <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+  <section class="container-page pb-32 md:pb-48">
+    <ul class="grid grid-cols-1 md:grid-cols-12 gap-x-6 md:gap-x-8 gap-y-20 md:gap-y-32">
       {
-        projects.map((project) => (
-          <li>
-            <a href={`/work/${project.slug}`} class="block group">
-              <div class="aspect-[4/5] bg-border mb-4 overflow-hidden">
-                <div class="w-full h-full bg-gradient-to-br from-border to-bg" />
-              </div>
-              <div class="flex items-baseline justify-between">
-                <h2 class="heading-serif text-lg">{project.data.client}</h2>
-                <span class="text-ink-muted text-sm tabular-nums">{project.data.year}</span>
-              </div>
-              <p class="text-ink-muted text-sm mt-1">{project.data.summary}</p>
-              <ul class="flex flex-wrap gap-2 mt-2">
-                {project.data.tags.map((tag) => (
-                  <li class="text-xs text-ink-muted uppercase tracking-wider">{tag}</li>
-                ))}
-              </ul>
-            </a>
+        projects.map((project, i) => (
+          <li class={layouts[i] ?? 'md:col-span-6'}>
+            <ProjectCard
+              slug={project.slug}
+              client={project.data.client}
+              year={project.data.year}
+              summary={project.data.summary}
+              tags={project.data.tags}
+              aspect={aspects[i] ?? 'aspect-[4/5]'}
+            />
           </li>
         ))
       }

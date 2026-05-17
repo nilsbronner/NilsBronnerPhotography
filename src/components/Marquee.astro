@@ -1,0 +1,67 @@
+---
+/**
+ * Marquee CSS-only — défilement horizontal infini, lent (premium).
+ * Pas de Motion : c'est de l'ambient, pas une animation fonctionnelle.
+ * Respecte prefers-reduced-motion via @media dans globals.css.
+ */
+interface Props {
+  items: string[];
+  duration?: number; // secondes, défaut 60s
+}
+
+const { items, duration = 60 } = Astro.props;
+const doubled = [...items, ...items]; // duplication pour boucler sans saut
+---
+
+<div class="marquee" style={`--marquee-duration: ${duration}s;`}>
+  <div class="marquee__track">
+    {
+      doubled.map((item, i) => (
+        <span class="marquee__item" aria-hidden={i >= items.length}>
+          {item}
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    width: 100%;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+  }
+  .marquee__track {
+    display: flex;
+    gap: 4rem;
+    width: max-content;
+    animation: marquee-scroll var(--marquee-duration) linear infinite;
+  }
+  .marquee__item {
+    font-family: theme('fontFamily.serif');
+    font-size: clamp(2rem, 5vw, 4rem);
+    color: var(--ink-muted);
+    white-space: nowrap;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+    }
+  }
+</style>

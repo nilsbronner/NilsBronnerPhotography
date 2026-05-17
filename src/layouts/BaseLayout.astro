@@ -3,6 +3,7 @@ import '@/styles/globals.css';
 import Navigation from '@/components/Navigation.astro';
 import Footer from '@/components/Footer.astro';
 import PageTransition from '@/components/motion/PageTransition';
+import CustomCursor from '@/components/motion/CustomCursor';
 import { getLocale } from '@/lib/i18n';
 
 interface Props {
@@ -10,6 +11,8 @@ interface Props {
   description?: string;
   ogImage?: string;
   noindex?: boolean;
+  /** Page commençant par un hero sombre (la nav démarre en texte clair) */
+  darkHero?: boolean;
 }
 
 const {
@@ -17,6 +20,7 @@ const {
   description = 'Nils Bronner — Photographe à Strasbourg. Campagnes marques, architecture, portrait éditorial.',
   ogImage = '/og-default.jpg',
   noindex = false,
+  darkHero = false,
 } = Astro.props;
 
 const locale = getLocale(Astro.url.pathname);
@@ -53,7 +57,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-  <body class="bg-bg text-ink antialiased">
+  <body
+    class="bg-bg text-ink antialiased"
+    data-dark-hero={darkHero ? 'true' : 'false'}
+  >
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-ink focus:text-bg focus:px-3 focus:py-2"
@@ -62,6 +69,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     </a>
 
     <Navigation locale={locale} />
+
+    <CustomCursor client:idle />
 
     <PageTransition client:idle>
       <main id="main">

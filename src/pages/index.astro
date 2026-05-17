@@ -2,22 +2,46 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomeIntro from '@/components/motion/HomeIntro';
 import ScrollReveal from '@/components/motion/ScrollReveal';
+import ProjectCard from '@/components/ProjectCard.astro';
+import Marquee from '@/components/Marquee.astro';
 import { getCollection } from 'astro:content';
-import { t, type Locale } from '@/lib/i18n';
-
-const locale: Locale = 'fr';
+import { gradientFor } from '@/lib/gradients';
 
 const projects = (await getCollection('projects'))
   .filter((p) => p.data.locale === 'fr')
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, 6);
 
-const clients = ['Porsche', 'GreenGo', 'Squarea', 'Hammaecher Sipion', 'Circuit des Écuyers', 'nuance'];
+// Clients réels (BRIEF §1 + §6) — pas les thèmes du portfolio
+const clients = [
+  'Porsche',
+  'GreenGo',
+  'Squarea',
+  'Hammaecher Sipion',
+  'Circuit des Écuyers',
+  'Kikk Festival',
+  'OPUS 67',
+  'EIMI',
+  'nuance',
+];
+
+// Ratios alternés pour grille asymétrique
+const aspects = [
+  'aspect-[4/5]',
+  'aspect-[3/2]',
+  'aspect-[3/4]',
+  'aspect-[16/11]',
+  'aspect-[4/5]',
+  'aspect-[5/7]',
+];
+
+const heroGrad = gradientFor('home-hero');
 ---
 
 <BaseLayout
   title="Nils Bronner — Photographe, Strasbourg"
   description="Photographe basé à Strasbourg. Campagnes marques, architecture, portrait éditorial."
+  darkHero
 >
   <script
     type="application/ld+json"
@@ -44,66 +68,200 @@ const clients = ['Porsche', 'GreenGo', 'Squarea', 'Hammaecher Sipion', 'Circuit 
       },
     })}
   />
-  <!-- Hero / manifeste -->
-  <section class="container-page pt-24 md:pt-36 pb-24 md:pb-32">
+
+  <!-- ════════════════════════════════════════════════════════════════
+       HERO — full-bleed gradient, typographie massive, signature éditoriale
+       ════════════════════════════════════════════════════════════════ -->
+  <section
+    class="relative h-[88vh] min-h-[640px] -mt-16 md:-mt-20 flex items-end"
+    style={`background:${heroGrad.background};filter:${heroGrad.filter};`}
+  >
+    <!-- Grain subtle pour texture premium -->
+    <div
+      class="absolute inset-0 opacity-[0.08] mix-blend-overlay pointer-events-none"
+      style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><filter id=%22n%22><feTurbulence baseFrequency=%220.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/></filter><rect width=%22120%22 height=%22120%22 filter=%22url(%23n)%22/></svg>');"
+    >
+    </div>
+
+    <!-- Coordonnées éditoriales top -->
+    <div class="absolute top-24 md:top-28 left-0 right-0 container-page flex justify-between text-bg/60 text-[11px] uppercase tracking-[0.25em] font-sans">
+      <span>Strasbourg · FR</span>
+      <span class="hidden md:inline tabular-nums">N 48.58° · E 7.75°</span>
+      <span class="tabular-nums">© 2026</span>
+    </div>
+
     <HomeIntro client:load>
-      <h1 class="heading-serif text-4xl md:text-6xl lg:text-7xl leading-[1.05] max-w-4xl">
-        Photographe basé à Strasbourg, je crée des images pour les marques, agences et institutions qui exigent un regard et une exécution irréprochables.
-      </h1>
-      <p class="mt-8 text-ink-muted text-base md:text-lg uppercase tracking-widest">
-        Précis. Narratif. Tenu.
-      </p>
+      <div class="container-page pb-16 md:pb-20 relative">
+        <h1
+          class="font-serif text-bg leading-[0.95] tracking-[-0.02em] max-w-[18ch]"
+          style="font-size:clamp(2.75rem, 8.5vw, 8rem);"
+        >
+          Photographe<br />
+          <span class="italic font-light">basé</span> à Strasbourg.
+        </h1>
+        <p class="mt-8 max-w-xl text-bg/75 text-base md:text-lg leading-relaxed">
+          Je crée des images pour les marques, agences et institutions qui exigent
+          un regard et une exécution irréprochables.
+        </p>
+
+        <div class="mt-12 flex flex-wrap gap-x-12 gap-y-4 items-baseline text-bg/70 text-[11px] uppercase tracking-[0.25em] font-sans">
+          <span>— Précis</span>
+          <span>— Narratif</span>
+          <span>— Tenu</span>
+        </div>
+      </div>
     </HomeIntro>
+
+    <!-- Pagination repère bas droite -->
+    <div class="absolute bottom-16 md:bottom-20 right-0 container-page pointer-events-none">
+      <div class="flex justify-end items-end gap-3 text-bg/70 text-[11px] uppercase tracking-[0.25em] font-sans tabular-nums">
+        <span>01</span>
+        <span class="block w-12 h-px bg-bg/30"></span>
+        <span>06</span>
+      </div>
+    </div>
   </section>
 
-  <!-- Sélection portfolio -->
-  <section class="container-page pb-24 md:pb-32">
-    <div class="flex items-baseline justify-between mb-10">
-      <h2 class="heading-serif text-2xl md:text-3xl">Sélection</h2>
-      <a href="/work" class="text-sm text-ink-muted hover:text-ink transition-colors">
-        Voir tout →
+  <!-- ════════════════════════════════════════════════════════════════
+       MANIFESTE COURT — 2 colonnes, typographie éditoriale
+       ════════════════════════════════════════════════════════════════ -->
+  <section class="container-page py-32 md:py-48">
+    <ScrollReveal client:visible>
+      <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-12">
+        — § 01 / Manifeste
+      </p>
+    </ScrollReveal>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
+      <ScrollReveal client:visible as="div" className="md:col-span-7">
+        <h2
+          class="heading-serif leading-[0.98] tracking-[-0.02em]"
+          style="font-size:clamp(2rem, 5vw, 4.5rem);"
+        >
+          Je crois aux images <span class="italic font-light">qui tiennent.</span>
+        </h2>
+      </ScrollReveal>
+      <ScrollReveal client:visible as="div" className="md:col-span-5 md:col-start-8 space-y-5 text-ink-muted leading-relaxed text-lg max-w-prose">
+        <p>
+          Celles qui ne meurent pas trois jours après la campagne. Celles qui
+          survivent au scroll et restent dans une mémoire.
+        </p>
+        <p>
+          Pour ça, il faut du temps, de la lumière et un point de vue. Je travaille
+          avec des marques, des agences et des institutions qui partagent cette
+          exigence&nbsp;: produire moins, mais produire ce qui restera.
+        </p>
+        <p class="pt-2">
+          <a href="/about" class="text-ink border-b border-ink/30 hover:border-ink pb-0.5 transition-colors">
+            Lire le manifeste complet →
+          </a>
+        </p>
+      </ScrollReveal>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       PORTFOLIO ASYMÉTRIQUE — 6 projets, ratios variés, rythme éditorial
+       ════════════════════════════════════════════════════════════════ -->
+  <section class="container-page pb-32 md:pb-48">
+    <div class="flex items-end justify-between mb-16 md:mb-24">
+      <div>
+        <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted mb-4">
+          — § 02 / Sélection
+        </p>
+        <h2
+          class="heading-serif leading-[0.95] tracking-[-0.02em]"
+          style="font-size:clamp(2.5rem, 6vw, 5rem);"
+        >
+          Travaux récents
+        </h2>
+      </div>
+      <a
+        href="/work"
+        class="hidden md:inline-block text-sm border-b border-ink pb-0.5 hover:text-ink-muted hover:border-ink-muted transition-colors shrink-0"
+      >
+        Tout voir
       </a>
     </div>
 
-    <ul class="group/grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+    <!-- Grille asymétrique : 12 colonnes, cards de tailles variées -->
+    <ul class="grid grid-cols-1 md:grid-cols-12 gap-x-6 md:gap-x-8 gap-y-20 md:gap-y-32">
       {
-        projects.map((project) => (
-          <li class="group/card transition-opacity duration-300 group-hover/grid:opacity-60 hover:!opacity-100">
-            <a href={`/work/${project.slug}`} class="block">
-              <div class="aspect-[4/5] bg-border mb-4 overflow-hidden">
-                {/* Placeholder visuel — image hero du projet à venir */}
-                <div class="w-full h-full bg-gradient-to-br from-border to-bg" />
-              </div>
-              <div class="flex items-baseline justify-between">
-                <h3 class="heading-serif text-lg">{project.data.client}</h3>
-                <span class="text-ink-muted text-sm tabular-nums">{project.data.year}</span>
-              </div>
-              <p class="text-ink-muted text-sm mt-1">{project.data.summary}</p>
-            </a>
-          </li>
-        ))
+        projects.map((project, i) => {
+          // Pattern : feature(7col), small(5col), small(5col offset), feature(7col offset), small(6col), small(6col)
+          const layouts = [
+            'md:col-span-7',
+            'md:col-span-5 md:mt-32',
+            'md:col-span-5',
+            'md:col-span-7 md:mt-32',
+            'md:col-span-6',
+            'md:col-span-6 md:mt-32',
+          ];
+          return (
+            <li class={layouts[i] ?? 'md:col-span-6'}>
+              <ProjectCard
+                slug={project.slug}
+                client={project.data.client}
+                year={project.data.year}
+                summary={project.data.summary}
+                tags={project.data.tags}
+                aspect={aspects[i] ?? 'aspect-[4/5]'}
+              />
+            </li>
+          );
+        })
       }
     </ul>
+
+    <div class="mt-20 md:hidden">
+      <a href="/work" class="text-sm border-b border-ink pb-0.5">Voir tous les projets →</a>
+    </div>
   </section>
 
-  <!-- Bandeau clients -->
-  <ScrollReveal client:visible as="section" className="container-page py-24 border-t border-border">
-    <p class="text-sm text-ink-muted uppercase tracking-widest mb-8">
-      {t(locale, 'home.clients.title')}
-    </p>
-    <ul class="flex flex-wrap gap-x-12 gap-y-6 heading-serif text-2xl md:text-3xl text-ink-muted">
-      {clients.map((c) => <li>{c}</li>)}
-    </ul>
-  </ScrollReveal>
+  <!-- ════════════════════════════════════════════════════════════════
+       MARQUEE CLIENTS — défilement horizontal lent, premium
+       ════════════════════════════════════════════════════════════════ -->
+  <section class="py-24 md:py-32 border-y border-border bg-bg">
+    <div class="container-page mb-10">
+      <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted">
+        — § 03 / Confiance
+      </p>
+    </div>
+    <Marquee items={clients} duration={70} />
+  </section>
 
-  <!-- CTA -->
-  <ScrollReveal client:visible as="section" className="container-page py-32 md:py-40 text-center">
-    <h2 class="heading-serif text-4xl md:text-6xl mb-8">{t(locale, 'cta.brief')}</h2>
-    <a
-      href="/contact"
-      class="inline-block border-b border-ink pb-1 hover:text-ink-muted hover:border-ink-muted transition-colors text-lg"
-    >
-      Démarrer un brief
-    </a>
-  </ScrollReveal>
+  <!-- ════════════════════════════════════════════════════════════════
+       CTA FINAL — gros chiffre, typographie franche
+       ════════════════════════════════════════════════════════════════ -->
+  <section class="container-page py-32 md:py-48">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+      <ScrollReveal client:visible as="div" className="md:col-span-2">
+        <p class="text-[10px] uppercase tracking-[0.3em] text-ink-muted">
+          — § 04
+        </p>
+      </ScrollReveal>
+      <ScrollReveal client:visible as="div" className="md:col-span-10">
+        <h2
+          class="heading-serif leading-[0.95] tracking-[-0.02em] max-w-[20ch]"
+          style="font-size:clamp(2.5rem, 8vw, 7rem);"
+        >
+          Un projet&nbsp;? <span class="italic font-light">Parlons-en.</span>
+        </h2>
+        <div class="mt-12 flex flex-wrap gap-x-12 gap-y-6">
+          <a
+            href="/contact"
+            class="inline-block text-lg border-b border-ink pb-1 hover:text-ink-muted hover:border-ink-muted transition-colors"
+          >
+            Démarrer un brief →
+          </a>
+          <a
+            href="mailto:contact@nilsbronner.com"
+            class="inline-block text-lg text-ink-muted hover:text-ink transition-colors"
+          >
+            contact@nilsbronner.com
+          </a>
+        </div>
+      </ScrollReveal>
+    </div>
+  </section>
 </BaseLayout>
